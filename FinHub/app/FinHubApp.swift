@@ -9,6 +9,11 @@ import SwiftUI
 
 @main
 struct FinHubApp: App {
+    init() {
+        saveTokenToKeychain(token: "REDUCTED", key: "finnhub") // finnhub
+        saveTokenToKeychain(token: "REDUCTED", key: "alpha") // Alpha Vantage
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
