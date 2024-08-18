@@ -12,6 +12,8 @@ struct ContentView: View {
     @StateObject private var viewModel = ContentViewModel()
     @State private var searchText: String = ""
     
+    @Namespace private var namespace
+    
     var body: some View {
         NavigationView {
             VStack {
@@ -34,8 +36,14 @@ struct ContentView: View {
                 } else {
                     ScrollView(.horizontal, showsIndicators: false) {
                         LazyHStack {
-                            ForEach(viewModel.stockSymbols) {
-                                StockRowView(viewModel: .init(stock: $0))
+                            ForEach(viewModel.stockSymbols) { stock in
+                                ScrollView(showsIndicators: false) {
+                                    StockRowView(
+                                        viewModel: .init(stock: stock)
+                                    )
+                                    .frame(minWidth: 300, idealWidth: 300, maxWidth: .infinity, minHeight: 500, maxHeight: .infinity, alignment: .center)
+                                }
+                                .shadow(color: .gray, radius: 8, x: 10, y: 5)
                             }
                         }
                         .scrollTargetLayout()
@@ -47,9 +55,7 @@ struct ContentView: View {
             }
             .background(Color(UIColor.systemGroupedBackground))
             .navigationTitle("Stocks")
-            .onAppear {
-                viewModel.prepareData()
-            }
+            .navigationBarTitleDisplayMode(.inline)
             .endEditingOnTap()
         }
     }

@@ -19,6 +19,7 @@ struct CompanyDetailsView: View {
                     CustomImageView(imageUrlString: companyProfile.logo)
                     if let flag = flag(for: companyProfile.country) {
                         Text(flag)
+                            .shadow(color: .gray, radius: 10, x: 0, y: 8)
                     }
                 }
                 
@@ -44,10 +45,12 @@ struct CompanyDetailsView: View {
             VStack(alignment: .leading) {
                 
                 Text(companyProfile.finnhubIndustry)
+                    .font(.caption)
                     .padding(.horizontal, 10)
                     .padding(.vertical, 6)
-                    .background(Color.teal.opacity(0.2))
-                    .cornerRadius(10)
+                    .background(Color.blue.opacity(0.7))
+                    .foregroundStyle(Color.white)
+                    .cornerRadius(15)
                 
                 getLabelView(
                     title: "Ticker: ",
@@ -105,24 +108,4 @@ extension Double {
         formatter.currencySymbol = "$"
         return formatter.string(from: NSNumber(value: self)) ?? "N/A"
     }
-}
-
-
-#Preview {
-    CompanyDetailsView(
-        companyProfile: CompanyProfile(
-            country: "US",
-            currency: "USD",
-            exchange: "NASDAQ NMS - GLOBAL MARKET",
-            ipo: "1980-12-12",
-            marketCapitalization: 3416673.621997,
-            name: "Apple Inc",
-            phone: "14089961010",
-            shareOutstanding: 15334.08,
-            ticker: "AAPL",
-            weburl: "https://www.apple.com/",
-            logo: "https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/AAPL.png",
-            finnhubIndustry: "Technology"
-        )
-    )
 }

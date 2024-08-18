@@ -8,7 +8,12 @@
 import Foundation
 import Combine
 
-class ContentViewModel: StockDataProvider {
+class ContentViewModel: ObservableObject {
+    
+    private var cancellables = Set<AnyCancellable>()
+    private let finnhubAPI: FinhubAPIService
+    private let searchSubject = PassthroughSubject<String, Never>()
+    
     @Published var stockSymbols: [StockSymbol] = []
     @Published var errorMessage: String?
     @Published var isLoading: Bool = false
@@ -17,13 +22,10 @@ class ContentViewModel: StockDataProvider {
             searchSubject.send(searchQuery)
         }
     }
-    private var cancellables = Set<AnyCancellable>()
-    private let networkManager: FinHubAPIProvider
-    private let searchSubject = PassthroughSubject<String, Never>()
     
-    init(networkManager: FinHubAPIProvider = FinHubStockProvider()) {
-        self.networkManager = networkManager
-        
+    init(finnhubAPI: FinhubAPIService = FinHubAPIProvider()) {
+        self.finnhubAPI = finnhubAPI
+        prepareData()
         searchSubject
             .debounce(for: .seconds(4), scheduler: RunLoop.main)
             .sink(receiveValue: { [weak self] query in
@@ -38,7 +40,7 @@ class ContentViewModel: StockDataProvider {
         isLoading = true
         errorMessage = nil
         
-        networkManager.fetchSymbols() { [weak self] (result: Result<[StockSymbol], Error>) in
+        finnhubAPI.fetchStockSymbols() { [weak self] (result: Result<[StockSymbol], Error>) in
             guard let self else { return }
             DispatchQueue.main.async {
                 self.isLoading = false
@@ -57,7 +59,7 @@ class ContentViewModel: StockDataProvider {
         isLoading = true
         errorMessage = nil
         
-        networkManager.searchSymbols(query: query) { [weak self] (result: Result<StockSearchResult, Error>) in
+        finnhubAPI.searchStocks(query: query) { [weak self] (result: Result<StockSearchResult, Error>) in
             DispatchQueue.main.async {
                 self?.isLoading = false
                 

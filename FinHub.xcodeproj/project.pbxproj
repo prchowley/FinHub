@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		903286662C70C2BC002D5799 /* CustomPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903286652C70C2BC002D5799 /* CustomPicker.swift */; };
+		903286692C70D4AD002D5799 /* GraphFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903286682C70D4AD002D5799 /* GraphFunction.swift */; };
+		9032866B2C70D4C5002D5799 /* GraphInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9032866A2C70D4C5002D5799 /* GraphInterval.swift */; };
+		9032866D2C70D4E0002D5799 /* FinnhubEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9032866C2C70D4E0002D5799 /* FinnhubEndpoint.swift */; };
+		9032866F2C70D4F4002D5799 /* AlphaVantageEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9032866E2C70D4F4002D5799 /* AlphaVantageEndpoint.swift */; };
 		908E25FD2C6F567A0010968C /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908E25FC2C6F567A0010968C /* SearchBar.swift */; };
 		908E26002C6F57E30010968C /* KeyChainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908E25FF2C6F57E30010968C /* KeyChainManager.swift */; };
 		908E26032C6F614A0010968C /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908E26022C6F614A0010968C /* HTTPClient.swift */; };
@@ -21,6 +26,8 @@
 		90A049A52C708C170015535B /* StockDataPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A049A42C708C170015535B /* StockDataPoint.swift */; };
 		90A049A72C708C430015535B /* StockChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A049A62C708C430015535B /* StockChartView.swift */; };
 		90A049A92C708C8A0015535B /* StockChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A049A82C708C8A0015535B /* StockChartViewModel.swift */; };
+		90A049AD2C70A2700015535B /* AlphaVantageAPIProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A049AC2C70A2700015535B /* AlphaVantageAPIProvider.swift */; };
+		90A049AF2C70B5FA0015535B /* StockDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A049AE2C70B5FA0015535B /* StockDetailsView.swift */; };
 		90C0D1EF2C6F7E2A00645E8A /* CustomImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C0D1EE2C6F7E2A00645E8A /* CustomImageView.swift */; };
 		90C0D1F12C6F7F3300645E8A /* StockQuoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C0D1F02C6F7F3300645E8A /* StockQuoteView.swift */; };
 		90C0D1F32C6F7F8900645E8A /* CompanyDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C0D1F22C6F7F8900645E8A /* CompanyDetailsView.swift */; };
@@ -29,14 +36,17 @@
 		90E190F62C6F3329003B72F8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 90E190F52C6F3329003B72F8 /* Assets.xcassets */; };
 		90E190F92C6F3329003B72F8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 90E190F82C6F3329003B72F8 /* Preview Assets.xcassets */; };
 		90E191002C6F336D003B72F8 /* FinHubWebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E190FF2C6F336D003B72F8 /* FinHubWebSocket.swift */; };
-		90E191022C6F48A4003B72F8 /* StockDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E191012C6F48A4003B72F8 /* StockDataProvider.swift */; };
-		90E191082C6F50E6003B72F8 /* FinHubStockProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E191072C6F50E6003B72F8 /* FinHubStockProvider.swift */; };
 		90E1910B2C6F5311003B72F8 /* StockSymbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E1910A2C6F5311003B72F8 /* StockSymbol.swift */; };
 		90E1910D2C6F5325003B72F8 /* FinHubAPIProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E1910C2C6F5325003B72F8 /* FinHubAPIProvider.swift */; };
 		90E191102C6F53CD003B72F8 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E1910F2C6F53CD003B72F8 /* ContentViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		903286652C70C2BC002D5799 /* CustomPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPicker.swift; sourceTree = "<group>"; };
+		903286682C70D4AD002D5799 /* GraphFunction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphFunction.swift; sourceTree = "<group>"; };
+		9032866A2C70D4C5002D5799 /* GraphInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphInterval.swift; sourceTree = "<group>"; };
+		9032866C2C70D4E0002D5799 /* FinnhubEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinnhubEndpoint.swift; sourceTree = "<group>"; };
+		9032866E2C70D4F4002D5799 /* AlphaVantageEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlphaVantageEndpoint.swift; sourceTree = "<group>"; };
 		908E25FC2C6F567A0010968C /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 		908E25FF2C6F57E30010968C /* KeyChainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyChainManager.swift; sourceTree = "<group>"; };
 		908E26022C6F614A0010968C /* HTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
@@ -51,6 +61,8 @@
 		90A049A42C708C170015535B /* StockDataPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockDataPoint.swift; sourceTree = "<group>"; };
 		90A049A62C708C430015535B /* StockChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockChartView.swift; sourceTree = "<group>"; };
 		90A049A82C708C8A0015535B /* StockChartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockChartViewModel.swift; sourceTree = "<group>"; };
+		90A049AC2C70A2700015535B /* AlphaVantageAPIProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlphaVantageAPIProvider.swift; sourceTree = "<group>"; };
+		90A049AE2C70B5FA0015535B /* StockDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockDetailsView.swift; sourceTree = "<group>"; };
 		90C0D1EE2C6F7E2A00645E8A /* CustomImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomImageView.swift; sourceTree = "<group>"; };
 		90C0D1F02C6F7F3300645E8A /* StockQuoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockQuoteView.swift; sourceTree = "<group>"; };
 		90C0D1F22C6F7F8900645E8A /* CompanyDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyDetailsView.swift; sourceTree = "<group>"; };
@@ -60,8 +72,6 @@
 		90E190F52C6F3329003B72F8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		90E190F82C6F3329003B72F8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		90E190FF2C6F336D003B72F8 /* FinHubWebSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinHubWebSocket.swift; sourceTree = "<group>"; };
-		90E191012C6F48A4003B72F8 /* StockDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockDataProvider.swift; sourceTree = "<group>"; };
-		90E191072C6F50E6003B72F8 /* FinHubStockProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinHubStockProvider.swift; sourceTree = "<group>"; };
 		90E1910A2C6F5311003B72F8 /* StockSymbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockSymbol.swift; sourceTree = "<group>"; };
 		90E1910C2C6F5325003B72F8 /* FinHubAPIProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinHubAPIProvider.swift; sourceTree = "<group>"; };
 		90E1910F2C6F53CD003B72F8 /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
@@ -78,6 +88,28 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		903286642C70BF21002D5799 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				908E25FC2C6F567A0010968C /* SearchBar.swift */,
+				90A0499E2C6FBC620015535B /* CachedAsyncImage.swift */,
+				90A049A02C6FC2400015535B /* EndEditingModifier.swift */,
+				903286652C70C2BC002D5799 /* CustomPicker.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		903286672C70D4A4002D5799 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				903286682C70D4AD002D5799 /* GraphFunction.swift */,
+				9032866A2C70D4C5002D5799 /* GraphInterval.swift */,
+				9032866C2C70D4E0002D5799 /* FinnhubEndpoint.swift */,
+				9032866E2C70D4F4002D5799 /* AlphaVantageEndpoint.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		908E25FE2C6F57D00010968C /* Utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -101,7 +133,7 @@
 			isa = PBXGroup;
 			children = (
 				90E1910C2C6F5325003B72F8 /* FinHubAPIProvider.swift */,
-				90E191072C6F50E6003B72F8 /* FinHubStockProvider.swift */,
+				90A049AC2C70A2700015535B /* AlphaVantageAPIProvider.swift */,
 				90E190FF2C6F336D003B72F8 /* FinHubWebSocket.swift */,
 			);
 			path = Services;
@@ -132,10 +164,9 @@
 				90E1910E2C6F53C5003B72F8 /* ViewModels */,
 				90E191032C6F50AC003B72F8 /* app */,
 				908E25FE2C6F57D00010968C /* Utils */,
+				903286642C70BF21002D5799 /* Components */,
 				90E191042C6F50AF003B72F8 /* views */,
 				90E190F52C6F3329003B72F8 /* Assets.xcassets */,
-				90E191062C6F50D0003B72F8 /* FinHub */,
-				90E191012C6F48A4003B72F8 /* StockDataProvider.swift */,
 				90E190F72C6F3329003B72F8 /* Preview Content */,
 			);
 			path = FinHub;
@@ -162,13 +193,11 @@
 			children = (
 				90E190F32C6F3329003B72F8 /* ContentView.swift */,
 				908E26062C6F6B460010968C /* StockRowView.swift */,
-				908E25FC2C6F567A0010968C /* SearchBar.swift */,
 				90C0D1EE2C6F7E2A00645E8A /* CustomImageView.swift */,
 				90C0D1F02C6F7F3300645E8A /* StockQuoteView.swift */,
 				90C0D1F22C6F7F8900645E8A /* CompanyDetailsView.swift */,
-				90A0499E2C6FBC620015535B /* CachedAsyncImage.swift */,
-				90A049A02C6FC2400015535B /* EndEditingModifier.swift */,
 				90A049A62C708C430015535B /* StockChartView.swift */,
+				90A049AE2C70B5FA0015535B /* StockDetailsView.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -176,16 +205,10 @@
 		90E191052C6F50C5003B72F8 /* DataSource */ = {
 			isa = PBXGroup;
 			children = (
+				903286672C70D4A4002D5799 /* Helpers */,
 				908E26012C6F613E0010968C /* HTTPClient */,
 			);
 			path = DataSource;
-			sourceTree = "<group>";
-		};
-		90E191062C6F50D0003B72F8 /* FinHub */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = FinHub;
 			sourceTree = "<group>";
 		};
 		90E191092C6F52E6003B72F8 /* Models */ = {
@@ -279,28 +302,33 @@
 			buildActionMask = 2147483647;
 			files = (
 				90E191102C6F53CD003B72F8 /* ContentViewModel.swift in Sources */,
+				9032866D2C70D4E0002D5799 /* FinnhubEndpoint.swift in Sources */,
 				90A049A32C708B600015535B /* AlphaGraphData.swift in Sources */,
 				908E26002C6F57E30010968C /* KeyChainManager.swift in Sources */,
-				90E191022C6F48A4003B72F8 /* StockDataProvider.swift in Sources */,
 				90E190F42C6F3329003B72F8 /* ContentView.swift in Sources */,
 				90E1910B2C6F5311003B72F8 /* StockSymbol.swift in Sources */,
 				90E190F22C6F3329003B72F8 /* FinHubApp.swift in Sources */,
 				90C0D1F32C6F7F8900645E8A /* CompanyDetailsView.swift in Sources */,
 				908E26092C6F6D080010968C /* StockRowViewModel.swift in Sources */,
 				908E26032C6F614A0010968C /* HTTPClient.swift in Sources */,
+				9032866F2C70D4F4002D5799 /* AlphaVantageEndpoint.swift in Sources */,
 				90C0D1EF2C6F7E2A00645E8A /* CustomImageView.swift in Sources */,
 				90A049A12C6FC2400015535B /* EndEditingModifier.swift in Sources */,
 				908E26052C6F66A20010968C /* APIEndpoint.swift in Sources */,
 				908E25FD2C6F567A0010968C /* SearchBar.swift in Sources */,
 				90A0499B2C6FBC0B0015535B /* ImageCache.swift in Sources */,
 				90A0499D2C6FBC4A0015535B /* AsyncImageLoader.swift in Sources */,
+				90A049AF2C70B5FA0015535B /* StockDetailsView.swift in Sources */,
 				90A049A72C708C430015535B /* StockChartView.swift in Sources */,
-				90E191082C6F50E6003B72F8 /* FinHubStockProvider.swift in Sources */,
 				90C0D1F12C6F7F3300645E8A /* StockQuoteView.swift in Sources */,
+				903286662C70C2BC002D5799 /* CustomPicker.swift in Sources */,
 				90E191002C6F336D003B72F8 /* FinHubWebSocket.swift in Sources */,
+				90A049AD2C70A2700015535B /* AlphaVantageAPIProvider.swift in Sources */,
 				90A049A92C708C8A0015535B /* StockChartViewModel.swift in Sources */,
 				90E1910D2C6F5325003B72F8 /* FinHubAPIProvider.swift in Sources */,
+				903286692C70D4AD002D5799 /* GraphFunction.swift in Sources */,
 				90A049A52C708C170015535B /* StockDataPoint.swift in Sources */,
+				9032866B2C70D4C5002D5799 /* GraphInterval.swift in Sources */,
 				90A0499F2C6FBC620015535B /* CachedAsyncImage.swift in Sources */,
 				908E26072C6F6B460010968C /* StockRowView.swift in Sources */,
 			);

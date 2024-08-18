@@ -23,9 +23,9 @@ class FinHubWebSocket: NSObject, ObservableObject {
         
         webSocketTask.send(.string(message), completionHandler: { error in
             if let error = error {
-                print("Error sending message: \(error)")
+                debugPrint("Error sending message: \(error)")
             } else {
-                print("Message sent successfully")
+                debugPrint("Message sent successfully")
             }
         })
         
@@ -33,10 +33,10 @@ class FinHubWebSocket: NSObject, ObservableObject {
             guard let message = try? result.get() else { return }
             
             switch message {
-            case .string(let text): print(text)
+            case .string(let text): debugPrint(text)
             case .data(let data):
                 guard let s = String(data: data, encoding: .utf8) else { return }
-                print(s)
+                debugPrint(s)
             default: break
             }
         }

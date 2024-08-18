@@ -10,8 +10,8 @@ import SwiftUI
 @main
 struct FinHubApp: App {
     init() {
-        saveTokenToKeychain(token: "REDUCTED", key: "finnhub") // finnhub
-        saveTokenToKeychain(token: "REDUCTED", key: "alpha") // Alpha Vantage
+        saveTokenToKeychain(token: "cqvfjb9r01qkoahg0cd0cqvfjb9r01qkoahg0cdg", key: "finnhub") // finnhub
+        saveTokenToKeychain(token: "244JOJQ6LBPIDBD6", key: "alpha") // Alpha Vantage
     }
     
     var body: some Scene {

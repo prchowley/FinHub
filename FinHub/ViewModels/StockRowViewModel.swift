@@ -9,22 +9,26 @@ import Foundation
 
 class StockRowViewModel: ObservableObject {
     
+    private let finnhubAPI: FinhubAPIService
+    let isDetails: Bool
+    
     var loading: Bool = false
-    private let networkManager: FinHubAPIProvider
     let stock: StockSymbol
+    
     @Published var companyProfile: CompanyProfile?
     @Published var companyQuote: StockQuote?
     @Published var graphData: AlphaGraphData?
     
-    init(networkManager: FinHubAPIProvider = FinHubStockProvider(), stock: StockSymbol) {
-        self.networkManager = networkManager
+    init(finnhubAPI: FinhubAPIService = FinHubAPIProvider(), stock: StockSymbol, isDetails: Bool = false) {
+        self.finnhubAPI = finnhubAPI
         self.stock = stock
+        self.isDetails = isDetails
         prepareData()
     }
     
     private func prepareData() {
         loading = true;
-        networkManager.companyProfile(symbol: stock.symbol) { [weak self] (result: Result<CompanyProfile, Error>) in
+        finnhubAPI.fetchCompanyProfile(symbol: stock.symbol) { [weak self] (result: Result<CompanyProfile, Error>) in
             guard let self = self else { return }
             
             DispatchQueue.main.async {
@@ -36,15 +40,17 @@ class StockRowViewModel: ObservableObject {
             }
         }
         
-        loading = true
-        networkManager.companyQuote(symbol: stock.symbol) { [weak self] (result: Result<StockQuote, Error>) in
-            guard let self = self else { return }
-            
-            DispatchQueue.main.async {
-                self.loading = false
-                switch result {
-                case .success(let companyQuote): self.companyQuote = companyQuote
-                case .failure: break
+        if isDetails {
+            loading = true
+            finnhubAPI.fetchStockQuote(symbol: stock.symbol) { [weak self] (result: Result<StockQuote, Error>) in
+                guard let self = self else { return }
+                
+                DispatchQueue.main.async {
+                    self.loading = false
+                    switch result {
+                    case .success(let companyQuote): self.companyQuote = companyQuote
+                    case .failure: break
+                    }
                 }
             }
         }

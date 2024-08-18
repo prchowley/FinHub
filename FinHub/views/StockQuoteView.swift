@@ -63,11 +63,3 @@ struct StockQuoteView: View {
         }
     }
 }
-
-#Preview {
-    StockQuoteView(
-        quote: StockQuote(
-            c: 100, h: 111, l: 66, o: 9, pc: 100
-        )
-    )
-}

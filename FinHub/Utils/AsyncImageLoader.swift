@@ -21,7 +21,7 @@ class AsyncImageLoader: ObservableObject {
     func loadImage() {
         guard let url = url else { return }
         
-        if let cachedImage = ImageCache.shared.image(for: url) {
+        if let cachedImage = ImageCache.shared.loadImageFromCache(forKey: url.lastPathComponent) {
             self.image = cachedImage
             return
         }
@@ -41,7 +41,7 @@ class AsyncImageLoader: ObservableObject {
                 return
             }
             
-            ImageCache.shared.setImage(downloadedImage, for: url)
+            ImageCache.shared.saveImageToCache(downloadedImage, forKey: url.lastPathComponent)
             DispatchQueue.main.async {
                 self.image = downloadedImage
             }

@@ -6,22 +6,42 @@
 //
 
 import Foundation
+import Combine
 
 class StockChartViewModel: ObservableObject {
-    @Published var stockData: [StockDataPoint] = []
-    private let networkManager: FinHubAPIProvider
+    
+    private let alphaVantageAPI: AlphaVantageAPIService
     private let stock: StockSymbol
+    
+    @Published var vmPickerFrequency = CustomPickerViewModel(options: GraphFunction.allCases)
+    @Published var vmPickerInterval = CustomPickerViewModel(options: GraphInterval.allCases)
+    
+    @Published var stockData: [StockDataPoint] = []
     @Published var loading: Bool = false
     
-    init(networkManager: FinHubAPIProvider = FinHubStockProvider(), stock: StockSymbol) {
-        self.networkManager = networkManager
+    private var cancellables: Set<AnyCancellable> = []
+    
+    init(
+        alphaVantageAPI: AlphaVantageAPIService = AlphaVantageAPIProvider(),
+        stock: StockSymbol
+    ) {
+        self.alphaVantageAPI = alphaVantageAPI
         self.stock = stock
-        prepareData()
+        
+        Publishers.CombineLatest(vmPickerFrequency.$selectedOption, vmPickerInterval.$selectedOption)
+            .sink { [weak self] newFrequency, newInterval in
+                self?.prepareData(with: newFrequency, and: newInterval)
+            }
+            .store(in: &cancellables)
     }
     
-    private func prepareData() {
+    private func prepareData(with frequency: GraphFunction, and interval: GraphInterval) {
         loading = true
-        networkManager.graphData(symbol: stock.symbol) { [weak self] (result: Result<AlphaGraphData, Error>) in
+        alphaVantageAPI.graphData(
+            of: stock.symbol,
+            with: frequency,
+            and: interval
+        ) { [weak self] (result: Result<AlphaGraphData, Error>) in
             guard let self = self else { return }
             
             DispatchQueue.main.async {
@@ -37,17 +57,18 @@ class StockChartViewModel: ObservableObject {
     
     private func prepareData(_ alphaGraphData: AlphaGraphData) -> [StockDataPoint] {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.dateFormat = vmPickerFrequency.selectedOption == .TIME_SERIES_INTRADAY ? "yyyy-MM-dd HH:mm:ss" : "yyyy-MM-dd"
+        let graphDataKey: AlphaGraphKeyType = vmPickerFrequency.selectedOption == .TIME_SERIES_INTRADAY ? .interval(vmPickerInterval.selectedOption) : .function(vmPickerFrequency.selectedOption)
         
         var dataPoints: [StockDataPoint] = []
         
-        for (key, value) in alphaGraphData.timeSeriesDaily ?? [:] {
+        for (key, value) in alphaGraphData.timeSeries[graphDataKey] ?? [:] {
             if let time = dateFormatter.date(from: key),
-               let open = Double(value.the1Open ?? "0.0"),
-               let high = Double(value.the2High ?? "0.0"),
-               let low = Double(value.the3Low ?? "0.0"),
-               let close = Double(value.the4Close ?? "0.0"),
-               let volume = Double(value.the5Volume ?? "0.0") {
+               let open = Double(value.open ?? "0.0"),
+               let high = Double(value.high ?? "0.0"),
+               let low = Double(value.low ?? "0.0"),
+               let close = Double(value.close ?? "0.0"),
+               let volume = Double(value.volume ?? "0.0") {
                 let dataPoint = StockDataPoint(time: time, open: open, high: high, low: low, close: close, volume: volume)
                 dataPoints.append(dataPoint)
             }

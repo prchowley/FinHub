@@ -14,21 +14,21 @@ enum NetworkError: Error {
 }
 
 protocol HTTPClientProtocol {
-    func performRequest<T: Decodable>(endpoint: EndpointProvider, completion: @escaping (Result<T, Error>) -> Void)
+    func request<T: Decodable>(endpoint: EndpointProvider, completion: @escaping (Result<T, Error>) -> Void)
 }
 
 class HTTPClient: HTTPClientProtocol {
-    func performRequest<T: Decodable>(endpoint: EndpointProvider, completion: @escaping (Result<T, Error>) -> Void) {
+    func request<T: Decodable>(endpoint: EndpointProvider, completion: @escaping (Result<T, Error>) -> Void) {
         guard let url = endpoint.url else {
             completion(.failure(NetworkError.invalidURL))
             return
         }
         
-        print("⬆️ Request URL: \(url)")
+        debugPrint("⬆️ Request URL: \(url)")
         
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
             if let data = data, let responseString = String(data: data, encoding: .utf8) {
-                print("⬇️ Response Data: \(responseString)")
+                debugPrint("⬇️ Response Data: \(responseString)")
             }
             
             if let error = error {
