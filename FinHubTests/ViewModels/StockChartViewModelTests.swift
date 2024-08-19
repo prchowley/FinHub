@@ -17,7 +17,18 @@ class StockChartViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         mockAPIService = MockAlphaVantageAPIService()
-        let stock = StockSymbol(symbol: "AAPL", description: "Apple Inc.", currency: "USD", displaySymbol: "AAPL", figi: "BBG000B9XRY4", isin: "US0378331005", mic: "XNAS", shareClassFIGI: nil, symbol2: nil, type: "Equity")
+        let stock = StockSymbol(
+            symbol: "AAPL",
+            description: "Apple Inc.",
+            currency: "USD",
+            displaySymbol: "AAPL",
+            figi: "BBG000B9XRY4",
+            isin: "US0378331005",
+            mic: "XNAS",
+            shareClassFIGI: nil,
+            symbol2: nil,
+            type: "Equity"
+        )
         viewModel = StockChartViewModel(alphaVantageAPI: mockAPIService, stock: stock)
     }
     
@@ -40,10 +51,23 @@ class StockChartViewModelTests: XCTestCase {
     
     func testGraphDataSuccess() {
         // Arrange
-        let metaData = MetaData(information: "Information", symbol: "AAPL", lastRefreshed: "2024-08-18", interval: "1min", outputSize: "Compact", timeZone: "US/Eastern")
+        let metaData = MetaData(
+            information: "Information",
+            symbol: "AAPL",
+            lastRefreshed: "2024-08-18",
+            interval: "1min", 
+            outputSize: "Compact",
+            timeZone: "US/Eastern"
+        )
         let timeSeries = [
             AlphaGraphKeyType.interval(.min1): [
-                "2024-08-18 09:00:00": GraphDataTimeSeries(open: "175.00", high: "177.00", low: "174.50", close: "176.00", volume: "1000000")
+                "2024-08-18 09:00:00": GraphDataTimeSeries(
+                    open: "175.00",
+                    high: "177.00",
+                    low: "174.50",
+                    close: "176.00",
+                    volume: "1000000"
+                )
             ]
         ]
         let graphData = AlphaGraphData(metaData: metaData, timeSeries: timeSeries)

@@ -14,6 +14,7 @@
 		9032866D2C70D4E0002D5799 /* FinnhubEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9032866C2C70D4E0002D5799 /* FinnhubEndpoint.swift */; };
 		9032866F2C70D4F4002D5799 /* AlphaVantageEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9032866E2C70D4F4002D5799 /* AlphaVantageEndpoint.swift */; };
 		9046DA952C73139600F37446 /* KeyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9046DA942C73139600F37446 /* KeyProvider.swift */; };
+		9046DA972C7328C600F37446 /* URLSessionMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9046DA962C7328C600F37446 /* URLSessionMock.swift */; };
 		90674BD52C728742007C3E3A /* FinHubUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90674BD42C728742007C3E3A /* FinHubUITests.swift */; };
 		90674BD72C728742007C3E3A /* FinHubUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90674BD62C728742007C3E3A /* FinHubUITestsLaunchTests.swift */; };
 		90674BDE2C7287DF007C3E3A /* StockQuote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90674BDD2C7287DF007C3E3A /* StockQuote.swift */; };
@@ -90,6 +91,7 @@
 		9032866C2C70D4E0002D5799 /* FinnhubEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinnhubEndpoint.swift; sourceTree = "<group>"; };
 		9032866E2C70D4F4002D5799 /* AlphaVantageEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlphaVantageEndpoint.swift; sourceTree = "<group>"; };
 		9046DA942C73139600F37446 /* KeyProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyProvider.swift; sourceTree = "<group>"; };
+		9046DA962C7328C600F37446 /* URLSessionMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionMock.swift; sourceTree = "<group>"; };
 		90674BD22C728742007C3E3A /* FinHubUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FinHubUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		90674BD42C728742007C3E3A /* FinHubUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinHubUITests.swift; sourceTree = "<group>"; };
 		90674BD62C728742007C3E3A /* FinHubUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinHubUITestsLaunchTests.swift; sourceTree = "<group>"; };
@@ -298,6 +300,7 @@
 				9094EFC62C72649F00FCC1EF /* MockHTTPClient.swift */,
 				9094EFCB2C72655100FCC1EF /* MockAlphaVantageAPIService.swift */,
 				9094EFEB2C7276FA00FCC1EF /* ImageCacheTests.swift */,
+				9046DA962C7328C600F37446 /* URLSessionMock.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -555,6 +558,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9046DA972C7328C600F37446 /* URLSessionMock.swift in Sources */,
 				9094EFBF2C725B5900FCC1EF /* StockChartViewModelTests.swift in Sources */,
 				9094EF9F2C72428F00FCC1EF /* GraphFunctionTests.swift in Sources */,
 				9094EFCA2C72653F00FCC1EF /* StockRowViewModelTests.swift in Sources */,

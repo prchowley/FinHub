@@ -8,38 +8,6 @@
 import XCTest
 @testable import FinHub
 
-// MARK: - Mock URLSession and URLSessionDataTask
-
-class URLSessionMock: URLSessionProtocol {
-    private let mockData: Data?
-    private let mockResponse: URLResponse?
-    private let mockError: Error?
-    
-    init(data: Data?, response: URLResponse?, error: Error?) {
-        self.mockData = data
-        self.mockResponse = response
-        self.mockError = error
-    }
-    
-    func dataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
-        return URLSessionDataTaskMock {
-            completionHandler(self.mockData, self.mockResponse, self.mockError)
-        }
-    }
-}
-
-class URLSessionDataTaskMock: URLSessionDataTask {
-    private let closure: () -> Void
-    
-    init(closure: @escaping () -> Void) {
-        self.closure = closure
-    }
-    
-    override func resume() {
-        closure()
-    }
-}
-
 class HTTPClientTests: XCTestCase {
     
     var httpClient: HTTPClient!
@@ -51,7 +19,12 @@ class HTTPClientTests: XCTestCase {
     
     func testRequestSuccess() {
         let mockURL = URL(string: "https://mockapi.com/mockpath")!
-        let mockEndpoint = MockEndpoint(baseURL: "https://mockapi.com", apiKey: "testApiKey", path: "/mockpath", queryItems: [])
+        let mockEndpoint = MockEndpoint(
+            baseURL: "https://mockapi.com",
+            apiKey: "testApiKey",
+            path: "/mockpath",
+            queryItems: []
+        )
         let mockData = """
         {
             "message": "Success"
@@ -80,7 +53,12 @@ class HTTPClientTests: XCTestCase {
     }
     
     func testRequestFailureInvalidURL() {
-        let mockEndpoint = MockEndpoint(baseURL: "invalid_url", apiKey: "testApiKey", path: "/mockpath", queryItems: [])
+        let mockEndpoint = MockEndpoint(
+            baseURL: "invalid_url",
+            apiKey: "testApiKey",
+            path: "/mockpath",
+            queryItems: []
+        )
         
         let urlSession = URLSessionMock(data: nil, response: nil, error: nil)
         httpClient = HTTPClient(urlSession: urlSession)
@@ -101,7 +79,12 @@ class HTTPClientTests: XCTestCase {
     
     func testRequestFailureNoData() {
         let mockURL = URL(string: "https://mockapi.com/mockpath")!
-        let mockEndpoint = MockEndpoint(baseURL: "https://mockapi.com", apiKey: "testApiKey", path: "/mockpath", queryItems: [])
+        let mockEndpoint = MockEndpoint(
+            baseURL: "https://mockapi.com",
+            apiKey: "testApiKey",
+            path: "/mockpath",
+            queryItems: []
+        )
         
         let urlSession = URLSessionMock(data: nil, response: nil, error: nil)
         httpClient = HTTPClient(urlSession: urlSession)
@@ -122,7 +105,12 @@ class HTTPClientTests: XCTestCase {
     
     func testRequestFailureDecodingError() {
         let mockURL = URL(string: "https://mockapi.com/mockpath")!
-        let mockEndpoint = MockEndpoint(baseURL: "https://mockapi.com", apiKey: "testApiKey", path: "/mockpath", queryItems: [])
+        let mockEndpoint = MockEndpoint(
+            baseURL: "https://mockapi.com",
+            apiKey: "testApiKey",
+            path: "/mockpath",
+            queryItems: []
+        )
         let mockData = """
         {
             "invalid_key": "Invalid"
