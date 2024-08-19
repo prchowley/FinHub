@@ -14,20 +14,39 @@ struct StockChartView: View {
     
     var body: some View {
         VStack {
-            HStack {
-                CustomPicker(viewModel: viewModel.vmPickerFrequency)
-                if viewModel.vmPickerFrequency.selectedOption == .TIME_SERIES_INTRADAY {
-                    CustomPicker(viewModel: viewModel.vmPickerInterval)
-                }
+            if viewModel.loading {
+                ProgressView()
+            } else if let errorMessage = viewModel.errorMessage {
+                errorView(errorMessage: errorMessage)
+            } else if viewModel.stockData.isEmpty {
+                errorView(errorMessage: "No data available")
+            } else {
+                mainContent
             }
-            Chart(viewModel.stockData) { dataPoint in
-                LineMark(
-                    x: .value("Time", dataPoint.time),
-                    y: .value("Close", dataPoint.close)
-                )
-                .foregroundStyle(.blue)
-            }
-            .padding()
         }
+    }
+    
+    @ViewBuilder
+    private var mainContent: some View {
+        HStack {
+            CustomPicker(viewModel: viewModel.vmPickerFrequency)
+            if viewModel.vmPickerFrequency.selectedOption == .TIME_SERIES_INTRADAY {
+                CustomPicker(viewModel: viewModel.vmPickerInterval)
+            }
+        }
+        Chart(viewModel.stockData) { dataPoint in
+            LineMark(
+                x: .value("Time", dataPoint.time),
+                y: .value("Close", dataPoint.close)
+            )
+            .foregroundStyle(.blue)
+        }
+        .padding()
+    }
+    
+    private func errorView(errorMessage: String) -> some View {
+        Text(errorMessage)
+            .foregroundColor(.red)
+            .padding()
     }
 }

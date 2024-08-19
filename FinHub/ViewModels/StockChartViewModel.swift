@@ -18,6 +18,7 @@ class StockChartViewModel: ObservableObject {
     
     @Published var stockData: [StockDataPoint] = []
     @Published var loading: Bool = false
+    @Published var errorMessage: String?
     
     private var cancellables: Set<AnyCancellable> = []
     
@@ -49,7 +50,8 @@ class StockChartViewModel: ObservableObject {
                 switch result {
                 case .success(let graphData):
                     self.stockData = self.prepareData(graphData)
-                case .failure: break
+                case .failure:
+                    self.errorMessage = "Something went wrong!"
                 }
             }
         }
