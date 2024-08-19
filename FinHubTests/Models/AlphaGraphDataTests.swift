@@ -8,8 +8,10 @@
 import XCTest
 @testable import FinHub
 
+/// Unit tests for encoding and decoding `AlphaGraphData`.
 class AlphaGraphDataTests: XCTestCase {
     
+    /// Tests encoding of `AlphaGraphData` to JSON.
     func testEncodeAlphaGraphData() {
         // Given
         let metaData = MetaData(
@@ -51,7 +53,7 @@ class AlphaGraphDataTests: XCTestCase {
             let jsonObject = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any]
             
             // Then
-            XCTAssertNotNil(jsonObject)
+            XCTAssertNotNil(jsonObject, "Expected the JSON object to be non-nil")
             
             // Verify Meta Data
             guard let metaDataDict = jsonObject?["Meta Data"] as? [String: String] else {
@@ -92,6 +94,7 @@ class AlphaGraphDataTests: XCTestCase {
         }
     }
     
+    /// Tests decoding of `AlphaGraphData` from JSON.
     func testDecodeAlphaGraphData() {
         // Given
         let json = """
