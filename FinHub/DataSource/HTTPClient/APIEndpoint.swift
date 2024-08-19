@@ -26,7 +26,7 @@ extension EndpointProvider {
     /// Computed property that constructs and returns a URL from the endpoint's components.
     var url: URL? {
         // Create URLComponents from the base URL string.
-        var components = URLComponents(string: baseURL)
+        let components = URLComponents(string: baseURL)
         
         // Ensure the base URL is valid.
         guard var validComponents = components else {

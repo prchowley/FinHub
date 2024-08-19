@@ -57,7 +57,7 @@ protocol URLSessionProtocol: Sendable {
     ///   - url: The URL for the data task.
     ///   - completionHandler: The completion handler for the data task.
     /// - Returns: A URLSessionDataTask instance.
-    func dataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask
+    func dataTask(with url: URL, completionHandler: @Sendable @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask
 }
 
 extension URLSession: URLSessionProtocol {}

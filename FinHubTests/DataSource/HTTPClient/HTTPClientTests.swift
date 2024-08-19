@@ -31,7 +31,6 @@ class HTTPClientTests: XCTestCase {
     /// This test verifies that the `HTTPClient` can successfully handle a request with valid data,
     /// and that the response data is decoded correctly.
     func testRequestSuccess() {
-        let mockURL = URL(string: "https://mockapi.com/mockpath")!
         let mockEndpoint = MockEndpoint(
             baseURL: "https://mockapi.com",
             apiKey: "testApiKey",
@@ -99,7 +98,6 @@ class HTTPClientTests: XCTestCase {
     /// This test verifies that the `HTTPClient` correctly handles cases where the server returns no data,
     /// and that the appropriate error is returned.
     func testRequestFailureNoData() {
-        let mockURL = URL(string: "https://mockapi.com/mockpath")!
         let mockEndpoint = MockEndpoint(
             baseURL: "https://mockapi.com",
             apiKey: "testApiKey",
@@ -129,7 +127,6 @@ class HTTPClientTests: XCTestCase {
     /// This test verifies that the `HTTPClient` handles cases where the response data cannot be decoded,
     /// and that the correct decoding error is returned.
     func testRequestFailureDecodingError() {
-        let mockURL = URL(string: "https://mockapi.com/mockpath")!
         let mockEndpoint = MockEndpoint(
             baseURL: "https://mockapi.com",
             apiKey: "testApiKey",
