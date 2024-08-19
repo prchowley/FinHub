@@ -15,4 +15,13 @@ struct StockData: Identifiable {
     let low: Double
     let close: Double
     let volume: Double
+    
+    init(date: Date, open: Double, high: Double, low: Double, close: Double, volume: Double) {
+        self.date = date
+        self.open = open
+        self.high = high
+        self.low = low
+        self.close = close
+        self.volume = volume
+    }
 }
