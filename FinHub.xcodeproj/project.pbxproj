@@ -55,6 +55,7 @@
 		90C0D1EF2C6F7E2A00645E8A /* CustomImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C0D1EE2C6F7E2A00645E8A /* CustomImageView.swift */; };
 		90C0D1F12C6F7F3300645E8A /* StockQuoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C0D1F02C6F7F3300645E8A /* StockQuoteView.swift */; };
 		90C0D1F32C6F7F8900645E8A /* CompanyDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C0D1F22C6F7F8900645E8A /* CompanyDetailsView.swift */; };
+		90D625FD2C739A6100FA4992 /* StockDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D625FC2C739A6100FA4992 /* StockDataTests.swift */; };
 		90E190F22C6F3329003B72F8 /* FinHubApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E190F12C6F3329003B72F8 /* FinHubApp.swift */; };
 		90E190F42C6F3329003B72F8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E190F32C6F3329003B72F8 /* ContentView.swift */; };
 		90E190F62C6F3329003B72F8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 90E190F52C6F3329003B72F8 /* Assets.xcassets */; };
@@ -125,6 +126,7 @@
 		90C0D1EE2C6F7E2A00645E8A /* CustomImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomImageView.swift; sourceTree = "<group>"; };
 		90C0D1F02C6F7F3300645E8A /* StockQuoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockQuoteView.swift; sourceTree = "<group>"; };
 		90C0D1F22C6F7F8900645E8A /* CompanyDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyDetailsView.swift; sourceTree = "<group>"; };
+		90D625FC2C739A6100FA4992 /* StockDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockDataTests.swift; sourceTree = "<group>"; };
 		90E190EE2C6F3329003B72F8 /* FinHub.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinHub.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		90E190F12C6F3329003B72F8 /* FinHubApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinHubApp.swift; sourceTree = "<group>"; };
 		90E190F32C6F3329003B72F8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -241,6 +243,7 @@
 			children = (
 				9094EFB62C724A2300FCC1EF /* AlphaGraphDataTests.swift */,
 				901D78B62C727F5700382225 /* StockQuoteTests.swift */,
+				90D625FC2C739A6100FA4992 /* StockDataTests.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -507,6 +510,7 @@
 				9094EFC32C72646200FCC1EF /* MockFinhubAPIService.swift in Sources */,
 				9094EFCC2C72655100FCC1EF /* MockAlphaVantageAPIService.swift in Sources */,
 				9094EFA72C7246A300FCC1EF /* AlphaVantageEndpointTests.swift in Sources */,
+				90D625FD2C739A6100FA4992 /* StockDataTests.swift in Sources */,
 				9094EFED2C72783600FCC1EF /* ImageCacheTests.swift in Sources */,
 				9094EFA52C72467900FCC1EF /* FinnhubEndpointTests.swift in Sources */,
 			);
