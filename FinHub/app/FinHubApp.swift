@@ -14,12 +14,21 @@ import SwiftUI
 @main
 struct FinHubApp: App {
     
-    /// Initializes the FinHub application.
-    ///
-    /// This initializer is called when the app starts. It saves the API tokens using the provided key service.
-    init() {
-        saveTokens(keyservice: KeyProvider.shared)
-    }
+     /// Initializes the FinHub application.
+     ///
+     /// This initializer is called when the app starts. It saves the API tokens using the provided key service.
+     ///
+     /// - Parameter service: The `KeyService` instance used to save the tokens. Defaults to `KeyProvider.shared`.
+     init(with service: KeyService = KeyProvider.shared) {
+         saveTokens(keyservice: service)
+     }
+     
+     /// Default initializer for `FinHubApp`.
+     ///
+     /// This initializer uses the default `KeyProvider.shared` service to save the API tokens.
+     init() {
+         self.init(with: KeyProvider.shared)
+     }
     
     /// Saves the API tokens for different services.
     ///

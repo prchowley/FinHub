@@ -21,7 +21,7 @@ class AsyncImageLoader: ObservableObject {
     
     private let url: URL
     private let cache: ImageCaching
-    private let session: URLSession
+    private let session: URLSessionProtocol
     
     /// Initializes a new `AsyncImageLoader` instance.
     ///
@@ -32,7 +32,7 @@ class AsyncImageLoader: ObservableObject {
     init(
         url: URL,
         cache: ImageCaching = ImageCache.shared,
-        session: URLSession = .shared
+        session: URLSessionProtocol = URLSession.shared
     ) {
         self.session = session
         self.cache = cache
@@ -52,7 +52,7 @@ class AsyncImageLoader: ObservableObject {
         }
         
         // If not cached, download the image from the URL
-        let task = session.dataTask(with: url) { [weak self] data, response, error in
+        let task = session.createDataTask(with: url) { [weak self] data, response, error in
             guard let self = self else { return }
             
             if let error = error {

@@ -56,6 +56,8 @@
 		90C0D1F12C6F7F3300645E8A /* StockQuoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C0D1F02C6F7F3300645E8A /* StockQuoteView.swift */; };
 		90C0D1F32C6F7F8900645E8A /* CompanyDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C0D1F22C6F7F8900645E8A /* CompanyDetailsView.swift */; };
 		90D625FD2C739A6100FA4992 /* StockDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D625FC2C739A6100FA4992 /* StockDataTests.swift */; };
+		90D625FF2C73A66A00FA4992 /* AsyncImageLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D625FE2C73A66A00FA4992 /* AsyncImageLoaderTests.swift */; };
+		90D626012C73A79D00FA4992 /* MockImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D626002C73A79D00FA4992 /* MockImageCache.swift */; };
 		90E190F22C6F3329003B72F8 /* FinHubApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E190F12C6F3329003B72F8 /* FinHubApp.swift */; };
 		90E190F42C6F3329003B72F8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E190F32C6F3329003B72F8 /* ContentView.swift */; };
 		90E190F62C6F3329003B72F8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 90E190F52C6F3329003B72F8 /* Assets.xcassets */; };
@@ -127,6 +129,8 @@
 		90C0D1F02C6F7F3300645E8A /* StockQuoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockQuoteView.swift; sourceTree = "<group>"; };
 		90C0D1F22C6F7F8900645E8A /* CompanyDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyDetailsView.swift; sourceTree = "<group>"; };
 		90D625FC2C739A6100FA4992 /* StockDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockDataTests.swift; sourceTree = "<group>"; };
+		90D625FE2C73A66A00FA4992 /* AsyncImageLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncImageLoaderTests.swift; sourceTree = "<group>"; };
+		90D626002C73A79D00FA4992 /* MockImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockImageCache.swift; sourceTree = "<group>"; };
 		90E190EE2C6F3329003B72F8 /* FinHub.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinHub.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		90E190F12C6F3329003B72F8 /* FinHubApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinHubApp.swift; sourceTree = "<group>"; };
 		90E190F32C6F3329003B72F8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -225,6 +229,7 @@
 				9094EFA22C72460100FCC1EF /* GraphIntervalTests.swift */,
 				9094EFA42C72467900FCC1EF /* FinnhubEndpointTests.swift */,
 				9094EFA62C7246A300FCC1EF /* AlphaVantageEndpointTests.swift */,
+				90D625FE2C73A66A00FA4992 /* AsyncImageLoaderTests.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -276,6 +281,7 @@
 				9094EFCB2C72655100FCC1EF /* MockAlphaVantageAPIService.swift */,
 				9094EFEB2C7276FA00FCC1EF /* ImageCacheTests.swift */,
 				9046DA962C7328C600F37446 /* URLSessionMock.swift */,
+				90D626002C73A79D00FA4992 /* MockImageCache.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -495,8 +501,10 @@
 				9046DA972C7328C600F37446 /* URLSessionMock.swift in Sources */,
 				9094EFBF2C725B5900FCC1EF /* StockChartViewModelTests.swift in Sources */,
 				9094EF9F2C72428F00FCC1EF /* GraphFunctionTests.swift in Sources */,
+				90D626012C73A79D00FA4992 /* MockImageCache.swift in Sources */,
 				9094EFCA2C72653F00FCC1EF /* StockRowViewModelTests.swift in Sources */,
 				901D78B72C727F5700382225 /* StockQuoteTests.swift in Sources */,
+				90D625FF2C73A66A00FA4992 /* AsyncImageLoaderTests.swift in Sources */,
 				9094EFB72C724A2300FCC1EF /* AlphaGraphDataTests.swift in Sources */,
 				9094EFAC2C72489600FCC1EF /* APIEndpointTests.swift in Sources */,
 				9094EFC52C72648200FCC1EF /* MockAlphaVantageHTTPClient.swift in Sources */,
