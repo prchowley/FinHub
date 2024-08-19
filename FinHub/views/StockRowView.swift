@@ -36,6 +36,7 @@ struct StockRowView: View {
                             Image(systemName: "chevron.right.circle.fill")
                                 .font(.title)
                                 .foregroundColor(Color.blue)
+                                .background(Color.white)
                                 .cornerRadius(15)
                         }
                     }
@@ -43,7 +44,7 @@ struct StockRowView: View {
                     .shadow(color: .gray, radius: 10, x: 0, y: 8)
                 }
             }
-            .background(Color.white)
+            .background(viewModel.isDetails ? Color.clear : Color.white)
             .cornerRadius(16)
     }
 }
