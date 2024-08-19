@@ -58,7 +58,9 @@ class StockChartViewModel: ObservableObject {
     private func prepareData(_ alphaGraphData: AlphaGraphData) -> [StockDataPoint] {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = vmPickerFrequency.selectedOption == .TIME_SERIES_INTRADAY ? "yyyy-MM-dd HH:mm:ss" : "yyyy-MM-dd"
-        let graphDataKey: AlphaGraphKeyType = vmPickerFrequency.selectedOption == .TIME_SERIES_INTRADAY ? .interval(vmPickerInterval.selectedOption) : .function(vmPickerFrequency.selectedOption)
+        let graphDataKey: AlphaGraphKeyType = vmPickerFrequency.selectedOption == .TIME_SERIES_INTRADAY ? 
+            .interval(vmPickerInterval.selectedOption) :
+            .function(vmPickerFrequency.selectedOption)
         
         var dataPoints: [StockDataPoint] = []
         

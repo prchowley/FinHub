@@ -7,17 +7,35 @@
 
 import Foundation
 
+// MARK: - Error Handling
 enum NetworkError: Error {
     case invalidURL
     case noData
     case decodingError
 }
 
+// MARK: - Protocols
 protocol HTTPClientProtocol {
     func request<T: Decodable>(endpoint: EndpointProvider, completion: @escaping (Result<T, Error>) -> Void)
 }
 
+protocol URLSessionProtocol: Sendable {
+    func dataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask
+}
+
+extension URLSession: URLSessionProtocol {}
+
+// MARK: - HTTPClient
 class HTTPClient: HTTPClientProtocol {
+    
+    private let urlSession: URLSessionProtocol
+    private let decoder: JSONDecoder
+    
+    init(urlSession: URLSessionProtocol = URLSession.shared, decoder: JSONDecoder = JSONDecoder()) {
+        self.urlSession = urlSession
+        self.decoder = decoder
+    }
+    
     func request<T: Decodable>(endpoint: EndpointProvider, completion: @escaping (Result<T, Error>) -> Void) {
         guard let url = endpoint.url else {
             completion(.failure(NetworkError.invalidURL))
@@ -26,11 +44,7 @@ class HTTPClient: HTTPClientProtocol {
         
         debugPrint("⬆️ Request URL: \(url)")
         
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            if let data = data, let responseString = String(data: data, encoding: .utf8) {
-                debugPrint("⬇️ Response Data: \(responseString)")
-            }
-            
+        let task = urlSession.dataTask(with: url) { [weak self] data, response, error in
             if let error = error {
                 completion(.failure(error))
                 return
@@ -42,10 +56,10 @@ class HTTPClient: HTTPClientProtocol {
             }
             
             do {
-                let decodedData = try JSONDecoder().decode(T.self, from: data)
-                completion(.success(decodedData))
+                let decodedData = try self?.decoder.decode(T.self, from: data)
+                completion(.success(decodedData!))
             } catch {
-                completion(.failure(error))
+                completion(.failure(NetworkError.decodingError))
             }
         }
         task.resume()

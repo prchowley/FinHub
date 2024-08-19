@@ -12,13 +12,13 @@ protocol AlphaVantageAPIService {
 }
 
 class AlphaVantageAPIProvider: AlphaVantageAPIService {
-    private let httpClient: HTTPClient
+    private let httpClient: HTTPClientProtocol
 
-    init(httpClient: HTTPClient = HTTPClient()) {
+    init(httpClient: HTTPClientProtocol = HTTPClient()) {
         self.httpClient = httpClient
     }
 
     func graphData(of stockSymbol: String, with frequency: GraphFunction, and interval: GraphInterval, completion: @escaping (Result<AlphaGraphData, Error>) -> Void) {
-        httpClient.request(endpoint: AlphaVantageEndpoint.graph(f: frequency, symbol: stockSymbol, interval: interval), completion: completion)
+        httpClient.request(endpoint: AlphaVantageEndpoint(function: frequency, symbol: stockSymbol, interval: interval), completion: completion)
     }
 }

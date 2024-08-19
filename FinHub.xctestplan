@@ -1,0 +1,37 @@
+{
+  "configurations" : [
+    {
+      "id" : "76C31D15-37D3-4B42-A600-A87CD27F5D9D",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:FinHub.xcodeproj",
+      "identifier" : "90E190ED2C6F3329003B72F8",
+      "name" : "FinHub"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:FinHub.xcodeproj",
+        "identifier" : "9094EF942C72422100FCC1EF",
+        "name" : "FinHubTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:FinHub.xcodeproj",
+        "identifier" : "9094EFD82C72701800FCC1EF",
+        "name" : "FinHubUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

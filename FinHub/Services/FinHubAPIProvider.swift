@@ -15,25 +15,25 @@ protocol FinhubAPIService {
 }
 
 class FinHubAPIProvider: FinhubAPIService {
-    private let httpClient: HTTPClient
+    private let httpClient: HTTPClientProtocol
 
-    init(httpClient: HTTPClient = HTTPClient()) {
+    init(httpClient: HTTPClientProtocol = HTTPClient()) {
         self.httpClient = httpClient
     }
 
     func fetchStockSymbols(completion: @escaping (Result<[StockSymbol], Error>) -> Void) {
-        httpClient.request(endpoint: FinnhubEndpoint.stockSymbols, completion: completion)
+        httpClient.request(endpoint: FinnhubEndpoint(endpointType: .stockSymbols), completion: completion)
     }
 
     func searchStocks(query: String, completion: @escaping (Result<StockSearchResult, Error>) -> Void) {
-        httpClient.request(endpoint: FinnhubEndpoint.search(query: query), completion: completion)
+        httpClient.request(endpoint: FinnhubEndpoint(endpointType: .search(query: query)), completion: completion)
     }
 
     func fetchCompanyProfile(symbol: String, completion: @escaping (Result<CompanyProfile, Error>) -> Void) {
-        httpClient.request(endpoint: FinnhubEndpoint.companyProfile(symbol: symbol), completion: completion)
+        httpClient.request(endpoint: FinnhubEndpoint(endpointType: .companyProfile(symbol: symbol)), completion: completion)
     }
 
     func fetchStockQuote(symbol: String, completion: @escaping (Result<StockQuote, Error>) -> Void) {
-        httpClient.request(endpoint: FinnhubEndpoint.quote(symbol: symbol), completion: completion)
+        httpClient.request(endpoint: FinnhubEndpoint(endpointType: .quote(symbol: symbol)), completion: completion)
     }
 }

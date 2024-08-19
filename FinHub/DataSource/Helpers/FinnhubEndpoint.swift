@@ -7,24 +7,37 @@
 
 import Foundation
 
-enum FinnhubEndpoint: EndpointProvider {
-    case stockSymbols
-    case search(query: String)
-    case companyProfile(symbol: String)
-    case quote(symbol: String)
+struct FinnhubEndpoint: EndpointProvider {
+    enum EndpointType {
+        case stockSymbols
+        case search(query: String)
+        case companyProfile(symbol: String)
+        case quote(symbol: String)
+    }
     
-    var version: String { "/api/v1" }
+    private let endpointType: EndpointType
+    private let keyService: KeyService
+    
+    init(
+        endpointType: EndpointType,
+        keyService: KeyService = KeyProvider.shared
+    ) {
+        self.endpointType = endpointType
+        self.keyService = keyService
+    }
+    
+    private var version: String { "/api/v1" }
     
     var baseURL: String {
         "https://finnhub.io"
     }
     
     var apiKey: String {
-        return retrieveTokenFromKeychain(key: "finnhub") ?? "default_token_if_not_found"
+        keyService.get(for: .finnhub)
     }
     
     var path: String {
-        switch self {
+        switch endpointType {
         case .stockSymbols:
             return version + "/stock/symbol"
         case .search:
@@ -38,7 +51,7 @@ enum FinnhubEndpoint: EndpointProvider {
     
     var queryItems: [URLQueryItem] {
         var queryItems: [URLQueryItem] = [URLQueryItem(name: "token", value: apiKey)]
-        switch self {
+        switch endpointType {
         case .stockSymbols:
             queryItems += [
                 URLQueryItem(name: "exchange", value: "US"),
@@ -52,5 +65,13 @@ enum FinnhubEndpoint: EndpointProvider {
             queryItems += [URLQueryItem(name: "symbol", value: symbol)]
         }
         return queryItems
+    }
+    
+    func urlRequest() -> URLRequest? {
+        guard let url = URL(string: baseURL + path) else { return nil }
+        var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        urlComponents?.queryItems = queryItems
+        guard let finalURL = urlComponents?.url else { return nil }
+        return URLRequest(url: finalURL)
     }
 }

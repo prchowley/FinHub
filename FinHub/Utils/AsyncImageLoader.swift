@@ -11,22 +11,31 @@ import SwiftUI
 class AsyncImageLoader: ObservableObject {
     @Published var image: UIImage? = nil
     @Published var error: Error? = nil
-    private var url: URL?
+    private let url: URL
+    private let cache: ImageCaching
+    private let session: URLSession
     
-    init(url: URL?) {
+    init(
+        url: URL,
+        cache: ImageCaching = ImageCache.shared,
+        session: URLSession = .shared
+    ) {
+        self.session = session
+        self.cache = cache
         self.url = url
         loadImage()
     }
     
     func loadImage() {
-        guard let url = url else { return }
         
-        if let cachedImage = ImageCache.shared.loadImageFromCache(forKey: url.lastPathComponent) {
+        if let cachedImage = cache.loadImage(forKey: url.lastPathComponent) {
             self.image = cachedImage
             return
         }
         
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+        let task = session.dataTask(with: url) { [weak self] data, response, error in
+            guard let self else { return }
+            
             if let error = error {
                 DispatchQueue.main.async {
                     self.error = error
@@ -41,7 +50,7 @@ class AsyncImageLoader: ObservableObject {
                 return
             }
             
-            ImageCache.shared.saveImageToCache(downloadedImage, forKey: url.lastPathComponent)
+            cache.saveImage(downloadedImage, forKey: url.lastPathComponent)
             DispatchQueue.main.async {
                 self.image = downloadedImage
             }

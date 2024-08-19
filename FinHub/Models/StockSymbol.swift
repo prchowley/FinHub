@@ -23,52 +23,19 @@ struct StockSymbol: Codable, Identifiable {
     enum CodingKeys: String, CodingKey {
         case symbol, description, currency, displaySymbol, figi, isin, mic, shareClassFIGI, symbol2, type
     }
+    
+    init(symbol: String, description: String, currency: String?, displaySymbol: String, figi: String?, isin: String?, mic: String?, shareClassFIGI: String?, symbol2: String?, type: String) {
+        self.symbol = symbol
+        self.description = description
+        self.currency = currency
+        self.displaySymbol = displaySymbol
+        self.figi = figi
+        self.isin = isin
+        self.mic = mic
+        self.shareClassFIGI = shareClassFIGI
+        self.symbol2 = symbol2
+        self.type = type
+    }
 }
 
-struct StockSearchResult: Codable {
-    let count: Int
-    let result: [StockSymbol]
-}
-
-struct CompanyProfile: Codable {
-    let country: String
-    let currency: String
-    let exchange: String
-    let ipo: String
-    let marketCapitalization: Double
-    let name: String
-    let phone: String
-    let shareOutstanding: Double
-    let ticker: String
-    let weburl: String
-    let logo: String
-    let finnhubIndustry: String
-}
-
-struct StockQuote: Decodable {
-    let c: Double // Current price
-    let h: Double // High price
-    let l: Double // Low price
-    let o: Double // Open price
-    let pc: Double // Previous close
-}
-
-struct CandleData: Codable {
-    let c: [Double] // Close prices
-    let h: [Double] // High prices
-    let l: [Double] // Low prices
-    let o: [Double] // Open prices
-    let s: String   // Status
-    let t: [Int]    // Timestamps
-    let v: [Double] // Volume
-}
-
-struct StockData: Identifiable {
-    let id = UUID()
-    let date: Date
-    let open: Double
-    let high: Double
-    let low: Double
-    let close: Double
-    let volume: Double
-}
+extension StockSymbol: Equatable { }

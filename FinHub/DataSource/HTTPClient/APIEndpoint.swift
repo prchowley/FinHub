@@ -16,9 +16,26 @@ protocol EndpointProvider {
 
 extension EndpointProvider {
     var url: URL? {
+        // Create URLComponents from baseURL
         var components = URLComponents(string: baseURL)
-        components?.path = path
-        components?.queryItems = queryItems
-        return components?.url
+        
+        // Ensure baseURL is valid
+        guard var validComponents = components else {
+            return nil
+        }
+        
+        // Check if URLComponents contains a valid scheme and host
+        guard validComponents.scheme != nil, validComponents.host != nil else {
+            return nil
+        }
+        
+        // Append path
+        validComponents.path = path
+        
+        // Append query items
+        validComponents.queryItems = queryItems
+        
+        // Return the constructed URL
+        return validComponents.url
     }
 }

@@ -45,7 +45,7 @@ struct StockQuoteView: View {
     }
     
     func getColor() -> Color {
-        guard quote.c != quote.pc else { return .accentColor }
+        guard quote.c != quote.pc else { return .blue }
         return quote.c > quote.pc ? .green : .red
     }
     

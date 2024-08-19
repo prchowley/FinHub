@@ -11,8 +11,12 @@ struct CustomImageView: View {
     let imageUrlString: String
     
     var body: some View {
-        CachedAsyncImage(url: URL(string: imageUrlString))
-            .frame(width: 100, height: 100)
-            .cornerRadius(50)
+        if let url = URL(string: imageUrlString) {
+            CachedAsyncImage(url: url)
+                .frame(width: 100, height: 100)
+                .cornerRadius(50)
+        } else {
+            EmptyView() // Or use any other placeholder if desired
+        }
     }
 }

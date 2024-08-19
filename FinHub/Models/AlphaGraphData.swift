@@ -27,7 +27,7 @@ extension AlphaGraphKeyType: Identifiable {
 struct AlphaGraphData: Codable {
     let metaData: MetaData
     let timeSeries: [AlphaGraphKeyType: [String: GraphDataTimeSeries]]
-
+    
     enum CodingKeys: String, CodingKey {
         case metaData = "Meta Data"
         case timeSeries1Min = "Time Series (1min)"
@@ -40,7 +40,7 @@ struct AlphaGraphData: Codable {
         case timeSeriesWeekly = "Weekly Time Series"
         case timeSeriesMonthly = "Monthly Time Series"
     }
-
+    
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         metaData = try container.decode(MetaData.self, forKey: .metaData)
@@ -73,7 +73,7 @@ struct AlphaGraphData: Codable {
         }
         self.timeSeries = timeSeries
     }
-
+    
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(metaData, forKey: .metaData)
@@ -87,13 +87,19 @@ struct AlphaGraphData: Codable {
         try container.encodeIfPresent(timeSeries[.function(.TIME_SERIES_WEEKLY)], forKey: .timeSeriesWeekly)
         try container.encodeIfPresent(timeSeries[.function(.TIME_SERIES_MONTHLY)], forKey: .timeSeriesMonthly)
     }
+    
+    // Custom initializer
+    init(metaData: MetaData, timeSeries: [AlphaGraphKeyType: [String: GraphDataTimeSeries]]) {
+        self.metaData = metaData
+        self.timeSeries = timeSeries
+    }
 }
 
 // MARK: - MetaData
 struct MetaData: Codable {
     let information, symbol, lastRefreshed, interval: String?
     let outputSize, timeZone: String?
-
+    
     enum CodingKeys: String, CodingKey {
         case information = "1. Information"
         case symbol = "2. Symbol"
@@ -107,7 +113,7 @@ struct MetaData: Codable {
 // MARK: - GraphDataTimeSeries
 struct GraphDataTimeSeries: Codable {
     let open, high, low, close, volume: String?
-
+    
     enum CodingKeys: String, CodingKey {
         case open = "1. open"
         case high = "2. high"
@@ -116,3 +122,12 @@ struct GraphDataTimeSeries: Codable {
         case volume = "5. volume"
     }
 }
+
+extension AlphaGraphData: Equatable {
+    static func == (lhs: AlphaGraphData, rhs: AlphaGraphData) -> Bool {
+        lhs.timeSeries == rhs.timeSeries && lhs.metaData == rhs.metaData
+    }
+}
+
+extension GraphDataTimeSeries: Equatable { }
+extension MetaData: Equatable { }
