@@ -70,7 +70,7 @@ class ContentViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
         
-        finnhubAPI.fetchStockSymbols() { [weak self] (result: Result<[StockSymbol], Error>) in
+        finnhubAPI.fetchStockSymbols() { [weak self] (result: Result<[StockSymbol], NetworkError>) in
             guard let self = self else { return }
             
             DispatchQueue.main.async {
@@ -96,7 +96,7 @@ class ContentViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
         
-        finnhubAPI.searchStocks(query: query) { [weak self] (result: Result<StockSearchResult, Error>) in
+        finnhubAPI.searchStocks(query: query) { [weak self] (result: Result<StockSearchResult, NetworkError>) in
             DispatchQueue.main.async {
                 self?.isLoading = false
                 

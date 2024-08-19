@@ -9,7 +9,7 @@ import Foundation
 
 /// Protocol defining the method for fetching graph data from the Alpha Vantage API.
 protocol AlphaVantageAPIService {
-    func graphData(of stockSymbol: String, with frequency: GraphFunction, and interval: GraphInterval, completion: @escaping (Result<AlphaGraphData, Error>) -> Void)
+    func graphData(of stockSymbol: String, with frequency: GraphFunction, and interval: GraphInterval, completion: @escaping (Result<AlphaGraphData, NetworkError>) -> Void)
 }
 
 /// Class that conforms to `AlphaVantageAPIService` and uses an `HTTPClientProtocol` to perform network operations.
@@ -30,7 +30,7 @@ class AlphaVantageAPIProvider: AlphaVantageAPIService {
     ///   - frequency: The frequency of the data (e.g., daily, weekly).
     ///   - interval: The interval for the data (e.g., 1min, 5min).
     ///   - completion: A closure that is called with the result of the request.
-    func graphData(of stockSymbol: String, with frequency: GraphFunction, and interval: GraphInterval, completion: @escaping (Result<AlphaGraphData, Error>) -> Void) {
+    func graphData(of stockSymbol: String, with frequency: GraphFunction, and interval: GraphInterval, completion: @escaping (Result<AlphaGraphData, NetworkError>) -> Void) {
         // Requests graph data from the API using the `AlphaVantageEndpoint` for the given function, symbol, and interval.
         httpClient.request(endpoint: AlphaVantageEndpoint(function: frequency, symbol: stockSymbol, interval: interval), completion: completion)
     }

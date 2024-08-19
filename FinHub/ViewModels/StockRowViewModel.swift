@@ -73,7 +73,7 @@ class StockRowViewModel: ObservableObject {
     func prepareData() {
         // Start fetching company profile
         loadingCompanyProfile = true
-        finnhubAPI.fetchCompanyProfile(symbol: stock.symbol) { [weak self] (result: Result<CompanyProfile, Error>) in
+        finnhubAPI.fetchCompanyProfile(symbol: stock.symbol) { [weak self] (result: Result<CompanyProfile, NetworkError>) in
             guard let self = self else { return }
             
             DispatchQueue.main.async {
@@ -90,7 +90,7 @@ class StockRowViewModel: ObservableObject {
         // Conditionally fetch stock quote if details are requested
         if isDetails {
             loadingStockQuote = true
-            finnhubAPI.fetchStockQuote(symbol: stock.symbol) { [weak self] (result: Result<StockQuote, Error>) in
+            finnhubAPI.fetchStockQuote(symbol: stock.symbol) { [weak self] (result: Result<StockQuote, NetworkError>) in
                 guard let self = self else { return }
                 
                 DispatchQueue.main.async {

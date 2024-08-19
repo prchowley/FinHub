@@ -80,7 +80,7 @@ class StockChartViewModel: ObservableObject {
             of: stock.symbol,
             with: frequency,
             and: interval
-        ) { [weak self] (result: Result<AlphaGraphData, Error>) in
+        ) { [weak self] (result: Result<AlphaGraphData, NetworkError>) in
             guard let self = self else { return }
             
             DispatchQueue.main.async {
