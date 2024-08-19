@@ -23,14 +23,6 @@
         "identifier" : "9094EF942C72422100FCC1EF",
         "name" : "FinHubTests"
       }
-    },
-    {
-      "parallelizable" : true,
-      "target" : {
-        "containerPath" : "container:FinHub.xcodeproj",
-        "identifier" : "9094EFD82C72701800FCC1EF",
-        "name" : "FinHubUITests"
-      }
     }
   ],
   "version" : 1

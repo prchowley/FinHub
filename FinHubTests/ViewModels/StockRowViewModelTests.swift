@@ -78,12 +78,17 @@ class StockRowViewModelTests: XCTestCase {
         // Act
         let errorMessageExpectation = self.expectation(description: "Error message is set")
         
+        // Flag to ensure the expectation is only fulfilled once
+        var hasFulfilled = false
+        
         viewModel.$errorMessageCompanyProfile
             .dropFirst() // Skip the initial value
             .sink { message in
+                guard !hasFulfilled else { return } // Ensure expectation is only fulfilled once
                 if let errorMessage = message {
                     XCTAssertEqual(errorMessage, "Error: Failed to fetch profile")
                     errorMessageExpectation.fulfill()
+                    hasFulfilled = true // Update flag to prevent multiple fulfillments
                 }
             }
             .store(in: &cancellables)
@@ -139,13 +144,18 @@ class StockRowViewModelTests: XCTestCase {
         // Act
         let loadingExpectation = self.expectation(description: "Loading state is handled")
         
+        // Flag to ensure the expectation is only fulfilled once
+        var hasFulfilled = false
+        
         // Observe loading state
         viewModel.$loadingCompanyProfile
             .dropFirst() // Skip the initial value
             .sink { isLoading in
+                guard !hasFulfilled else { return } // Ensure expectation is only fulfilled once
                 if !isLoading {
                     XCTAssertFalse(isLoading, "Loading state should be false")
                     loadingExpectation.fulfill()
+                    hasFulfilled = true // Update flag to prevent multiple fulfillments
                 }
             }
             .store(in: &cancellables)
