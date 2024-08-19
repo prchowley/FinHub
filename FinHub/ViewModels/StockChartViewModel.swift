@@ -49,7 +49,11 @@ class StockChartViewModel: ObservableObject {
                 self.loading = false
                 switch result {
                 case .success(let graphData):
-                    self.stockData = self.prepareData(graphData)
+                    if let info = graphData.information {
+                        self.errorMessage = info;
+                    } else {
+                        self.stockData = self.prepareData(graphData)
+                    }
                 case .failure:
                     self.errorMessage = "Something went wrong!"
                 }

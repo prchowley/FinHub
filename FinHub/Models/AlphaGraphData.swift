@@ -27,6 +27,7 @@ extension AlphaGraphKeyType: Identifiable {
 struct AlphaGraphData: Codable {
     let metaData: MetaData
     let timeSeries: [AlphaGraphKeyType: [String: GraphDataTimeSeries]]
+    let information: String?
     
     enum CodingKeys: String, CodingKey {
         case metaData = "Meta Data"
@@ -39,6 +40,8 @@ struct AlphaGraphData: Codable {
         case timeSeriesDaily = "Time Series (Daily)"
         case timeSeriesWeekly = "Weekly Time Series"
         case timeSeriesMonthly = "Monthly Time Series"
+        
+        case information = "Information"
     }
     
     init(from decoder: Decoder) throws {
@@ -72,6 +75,7 @@ struct AlphaGraphData: Codable {
             timeSeries[.function(.TIME_SERIES_MONTHLY)] = series
         }
         self.timeSeries = timeSeries
+        self.information = try? container.decodeIfPresent(String.self, forKey: .information)
     }
     
     func encode(to encoder: Encoder) throws {
@@ -89,9 +93,10 @@ struct AlphaGraphData: Codable {
     }
     
     // Custom initializer
-    init(metaData: MetaData, timeSeries: [AlphaGraphKeyType: [String: GraphDataTimeSeries]]) {
+    init(metaData: MetaData, timeSeries: [AlphaGraphKeyType: [String: GraphDataTimeSeries]], information: String? = nil) {
         self.metaData = metaData
         self.timeSeries = timeSeries
+        self.information = information
     }
 }
 

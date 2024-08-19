@@ -8,11 +8,11 @@
 import Foundation
 
 enum GraphInterval: String {
+    case min60 = "60min"
     case min1 = "1min"
     case min5 = "5min"
     case min15 = "15min"
     case min30 = "30min"
-    case min60 = "60min"
 }
 
 extension GraphInterval: CaseIterable { }

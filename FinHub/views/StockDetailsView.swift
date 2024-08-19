@@ -32,6 +32,7 @@ struct StockDetailsView: View {
                     stock: viewModel.stock
                 )
             )
+            Spacer()
         }
     }
 }

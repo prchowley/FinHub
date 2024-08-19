@@ -8,10 +8,10 @@
 import Foundation
 
 enum GraphFunction: String {
-    case TIME_SERIES_INTRADAY
     case TIME_SERIES_DAILY
     case TIME_SERIES_WEEKLY
     case TIME_SERIES_MONTHLY
+    case TIME_SERIES_INTRADAY
     
     // Valid combinations mapping
     func getIntervals() -> [GraphInterval]? {
