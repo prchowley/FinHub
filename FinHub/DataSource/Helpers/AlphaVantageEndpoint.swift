@@ -7,16 +7,30 @@
 
 import Foundation
 
+/// Provides endpoint information for Alpha Vantage API requests.
 struct AlphaVantageEndpoint: EndpointProvider {
     
+    /// The function parameter for the API request.
     private let function: GraphFunction
+    
+    /// The stock symbol for the API request.
     private let symbol: String
+    
+    /// The interval parameter for the API request, used only for intraday functions.
     private let interval: GraphInterval
+    
+    /// The key service used to fetch the API key.
     private let keyService: KeyService
 
+    /// Initializes a new instance of `AlphaVantageEndpoint`.
+    /// - Parameters:
+    ///   - function: The function parameter for the API request.
+    ///   - symbol: The stock symbol for the API request.
+    ///   - interval: The interval parameter for the API request.
+    ///   - keyService: The key service to fetch the API key, default is `KeyProvider.shared`.
     init(
         function: GraphFunction,
-        symbol: String, 
+        symbol: String,
         interval: GraphInterval,
         keyService: KeyService = KeyProvider.shared
     ) {
@@ -26,18 +40,22 @@ struct AlphaVantageEndpoint: EndpointProvider {
         self.keyService = keyService
     }
 
+    /// The base URL for Alpha Vantage API.
     var baseURL: String {
         "https://www.alphavantage.co"
     }
 
+    /// The API key for authentication.
     var apiKey: String {
         keyService.get(for: .alpha)
     }
 
+    /// The path for the endpoint.
     var path: String {
         "/query"
     }
 
+    /// The query items for the endpoint based on the function and symbol.
     var queryItems: [URLQueryItem] {
         var queryItems = [
             URLQueryItem(name: "function", value: function.rawValue),
@@ -50,6 +68,8 @@ struct AlphaVantageEndpoint: EndpointProvider {
         return queryItems
     }
 
+    /// Creates a URL request for the endpoint.
+    /// - Returns: An optional `URLRequest` object if the URL is valid, otherwise `nil`.
     func urlRequest() -> URLRequest? {
         guard let url = URL(string: baseURL + path) else { return nil }
         var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)

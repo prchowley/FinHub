@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+/// The main view of the application that displays a list of stock symbols and a search bar.
+///
+/// This view manages the state for loading, errors, and displaying stock symbols. It provides a search bar to filter stock symbols and displays a horizontal scrollable list of stock rows.
 struct ContentView: View {
     
     @StateObject private var viewModel = ContentViewModel()
@@ -14,11 +17,15 @@ struct ContentView: View {
     
     @Namespace private var namespace
     
+    /// Creates the view that displays the content.
+    ///
+    /// The view consists of a search bar, loading indicators, error messages, and a horizontal list of stock symbols.
+    /// - Returns: A `View` that represents the content of the `ContentView`.
     var body: some View {
         NavigationView {
             VStack {
                 SearchBar(text: $searchText)
-                    .onChange(of: searchText) { newValue, _ in
+                    .onChange(of: searchText) { _, newValue in
                         viewModel.searchQuery = newValue
                     }
                     .padding()

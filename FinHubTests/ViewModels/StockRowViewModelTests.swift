@@ -78,7 +78,7 @@ class StockRowViewModelTests: XCTestCase {
         // Act
         let errorMessageExpectation = self.expectation(description: "Error message is set")
         
-        viewModel.$errorMessage
+        viewModel.$errorMessageCompanyProfile
             .dropFirst() // Skip the initial value
             .sink { message in
                 if let errorMessage = message {
@@ -140,7 +140,7 @@ class StockRowViewModelTests: XCTestCase {
         let loadingExpectation = self.expectation(description: "Loading state is handled")
         
         // Observe loading state
-        viewModel.$loading
+        viewModel.$loadingCompanyProfile
             .dropFirst() // Skip the initial value
             .sink { isLoading in
                 if !isLoading {

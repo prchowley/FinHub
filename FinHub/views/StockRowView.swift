@@ -7,13 +7,22 @@
 
 import SwiftUI
 
+/// A view that displays details for a specific stock, including company profile and stock quote.
+///
+/// This view presents either a company profile or loading indicator, a stock quote or loading indicator, and a navigation link to detailed stock information if not in detail mode.
 struct StockRowView: View {
     
     @StateObject var viewModel: StockRowViewModel
     
+    /// Creates the view that displays stock details.
+    ///
+    /// The view shows company profile information, stock quote, or appropriate loading/error messages. If not in detail mode, it includes a navigation link to detailed stock information.
+    ///
+    /// - Returns: A `View` that represents the content of the `StockRowView`.
     var body: some View {
         VStack(alignment: .leading) {
             
+            // Display company profile or loading/error state
             if let cp = viewModel.companyProfile {
                 CompanyDetailsView(companyProfile: cp)
                     .padding(8)
@@ -28,6 +37,7 @@ struct StockRowView: View {
                 Spacer()
             }
             
+            // Display stock quote or loading/error state
             if let q = viewModel.companyQuote {
                 StockQuoteView(quote: q)
                     .padding(8)
@@ -42,6 +52,7 @@ struct StockRowView: View {
                 Spacer()
             }
             
+            // Navigation link to stock details view if not in detail mode
             if !viewModel.isDetails {
                 Spacer()
                 HStack {

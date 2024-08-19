@@ -7,11 +7,18 @@
 
 import SwiftUI
 
-import SwiftUI
-
+/// A view that displays detailed information about a company, including its profile, logo, and additional details.
+///
+/// This view presents various company details such as the company’s logo, name, website, industry, ticker symbol, exchange, and market capitalization. It also includes functionality for displaying the country's flag based on a country code.
 struct CompanyDetailsView: View {
+    /// The company profile data to be displayed.
     let companyProfile: CompanyProfile
     
+    /// Constructs the view to display the company details.
+    ///
+    /// The view displays the company's logo, name, website link, industry, ticker symbol, exchange, and market capitalization. If available, it also displays the country flag.
+    ///
+    /// - Returns: A `View` representing the content of the `CompanyDetailsView`.
     var body: some View {
         VStack(alignment: .leading) {
             HStack{
@@ -73,6 +80,12 @@ struct CompanyDetailsView: View {
         }
     }
     
+    /// Creates a view with a title and subtitle.
+    ///
+    /// - Parameters:
+    ///   - title: The title to be displayed.
+    ///   - subTitle: The subtitle to be displayed.
+    /// - Returns: A `View` containing a `VStack` with a title and subtitle.
     func getLabelView(title: String, subTitle: String) -> some View {
         VStack(alignment: .leading) {
             Text(title)
@@ -83,6 +96,10 @@ struct CompanyDetailsView: View {
         }
     }
     
+    /// Returns the flag emoji corresponding to the given country code.
+    ///
+    /// - Parameter countryCode: The two-letter country code (e.g., "US" for the United States).
+    /// - Returns: A string representing the flag emoji, or `nil` if the country code is invalid.
     func flag(for countryCode: String) -> String? {
         guard countryCode.count == 2 else { return nil }
         
@@ -102,6 +119,10 @@ struct CompanyDetailsView: View {
 
 // Helper function for formatting currency
 extension Double {
+    /// Formats the value as a currency string.
+    ///
+    /// - Parameter code: The currency code (default is "USD").
+    /// - Returns: A string representing the formatted currency value.
     func currencyFormatted(with code: String = "USD") -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
