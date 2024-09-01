@@ -45,11 +45,6 @@ struct AlphaVantageEndpoint: EndpointProvider {
         "https://www.alphavantage.co"
     }
 
-    /// The API key for authentication.
-    var apiKey: String {
-        keyService.get(for: .alpha)
-    }
-
     /// The path for the endpoint.
     var path: String {
         "/query"
@@ -76,5 +71,13 @@ struct AlphaVantageEndpoint: EndpointProvider {
         urlComponents?.queryItems = queryItems
         guard let finalURL = urlComponents?.url else { return nil }
         return URLRequest(url: finalURL)
+    }
+}
+
+extension AlphaVantageEndpoint: APIKeyProvider {
+
+    /// The API key for authentication.
+    var apiKey: String {
+        keyService.get(for: .alpha)
     }
 }

@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-import SwiftUI
-
 /// A view that displays an image fetched from a URL with caching support.
 ///
 /// This view attempts to load an image from the provided URL string using `CachedAsyncImage`. The image is displayed in a circular frame with a fixed size. If the URL string is invalid, an empty view is shown.

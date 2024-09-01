@@ -51,11 +51,6 @@ struct FinnhubEndpoint: EndpointProvider {
         "https://finnhub.io"
     }
     
-    /// The API key for authentication.
-    var apiKey: String {
-        keyService.get(for: .finnhub)
-    }
-    
     /// The path for the endpoint based on the endpoint type.
     var path: String {
         switch endpointType {
@@ -97,5 +92,13 @@ struct FinnhubEndpoint: EndpointProvider {
         urlComponents?.queryItems = queryItems
         guard let finalURL = urlComponents?.url else { return nil }
         return URLRequest(url: finalURL)
+    }
+}
+
+extension FinnhubEndpoint: APIKeyProvider {
+    
+    /// The API key for authentication.
+    var apiKey: String {
+        keyService.get(for: .finnhub)
     }
 }

@@ -9,7 +9,7 @@
 import XCTest
 
 /// A mock implementation of `EndpointProvider` for testing purposes.
-class MockEndpoint: EndpointProvider {
+class MockEndpoint: EndpointProvider, APIKeyProvider {
     /// The base URL for the endpoint.
     var baseURL: String
     /// The API key for accessing the endpoint.
@@ -35,7 +35,7 @@ class MockEndpoint: EndpointProvider {
 }
 
 /// A concrete implementation of `EndpointProvider` for testing purposes.
-struct TestEndpoint: EndpointProvider {
+struct TestEndpoint: EndpointProvider, APIKeyProvider {
     /// The base URL for the endpoint.
     var baseURL: String
     /// The API key for accessing the endpoint.

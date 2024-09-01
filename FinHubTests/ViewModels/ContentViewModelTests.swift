@@ -85,7 +85,6 @@ class ContentViewModelTests: XCTestCase {
             .sink { errorMessage in
                 guard !fulfilled else { return }
                 // Assert: Verify that the error message is correctly set
-                // XCTAssertEqual(errorMessage, "Error: \(testError.localizedDescription)")
                 expectation.fulfill()
                 fulfilled = true
             }

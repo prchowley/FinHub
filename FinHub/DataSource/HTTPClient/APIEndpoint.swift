@@ -7,13 +7,17 @@
 
 import Foundation
 
-/// Protocol defining the requirements for an endpoint provider.
-protocol EndpointProvider {
-    /// The base URL for the endpoint.
-    var baseURL: String { get }
-    
+protocol APIKeyProvider {
+
     /// The API key required for authentication.
     var apiKey: String { get }
+}
+
+/// Protocol defining the requirements for an endpoint provider.
+protocol EndpointProvider {
+
+    /// The base URL for the endpoint.
+    var baseURL: String { get }
     
     /// The specific path for the endpoint.
     var path: String { get }

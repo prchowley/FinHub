@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-import SwiftUI
-
 /// A view that asynchronously loads and caches an image from a given URL.
 ///
 /// The `CachedAsyncImage` uses the `AsyncImageLoader` class to load an image from the network and cache it. The view displays the image, a placeholder if the image is loading, or an error indicator if loading fails.
