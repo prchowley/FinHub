@@ -30,25 +30,30 @@ extension EndpointProvider {
     /// Computed property that constructs and returns a URL from the endpoint's components.
     var url: URL? {
         // Create URLComponents from the base URL string.
-        let components = URLComponents(string: baseURL)
+        guard var components = URLComponents(string: baseURL) else {
+            return nil
+        }
         
         // Ensure the base URL is valid.
-        guard var validComponents = components else {
+        guard components.scheme != nil, components.host != nil else {
             return nil
         }
         
-        // Check if the URLComponents contains a valid scheme and host.
-        guard validComponents.scheme != nil, validComponents.host != nil else {
-            return nil
+        // Append the path to the URLComponents, ensuring there is no double slashing.
+        if !path.isEmpty {
+            // Remove any leading slash from the path if the base URL already ends with a slash
+            let trimmedPath = path.hasPrefix("/") ? String(path.dropFirst()) : path
+            components.path = "\(components.path)/\(trimmedPath)"
         }
         
-        // Append the path to the URLComponents.
-        validComponents.path = path
-        
-        // Append the query items to the URLComponents.
-        validComponents.queryItems = queryItems
+        // Append the query items to the URLComponents, but only if they exist.
+        if !queryItems.isEmpty {
+            components.queryItems = queryItems
+        } else {
+            components.queryItems = nil
+        }
         
         // Return the constructed URL.
-        return validComponents.url
+        return components.url
     }
 }

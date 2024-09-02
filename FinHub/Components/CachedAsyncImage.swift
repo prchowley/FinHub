@@ -27,7 +27,9 @@ struct CachedAsyncImage: View {
         content
             .onAppear {
                 // Trigger image loading when the view appears
-                loader.loadImage()
+                Task {
+                    await loader.loadImage()
+                }
             }
     }
     

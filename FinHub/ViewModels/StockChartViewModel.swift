@@ -12,6 +12,7 @@ import Combine
 ///
 /// The `StockChartViewModel` fetches and processes stock data using the Alpha Vantage API. It provides
 /// stock data points based on user-selected frequency and interval and handles loading states and error messages.
+@MainActor
 class StockChartViewModel: ObservableObject {
     
     // MARK: - Properties
@@ -51,7 +52,7 @@ class StockChartViewModel: ObservableObject {
     ///   - alphaVantageAPI: The service used to fetch graph data. Defaults to `AlphaVantageAPIProvider()`.
     ///   - stock: The `StockSymbol` for which to fetch the chart data.
     init(
-        alphaVantageAPI: AlphaVantageAPIService = AlphaVantageAPIProvider(),
+        alphaVantageAPI: AlphaVantageAPIService = AlphaVantageAPIProvider(httpClient: HTTPClient.shared),
         stock: StockSymbol
     ) {
         self.alphaVantageAPI = alphaVantageAPI
@@ -59,7 +60,10 @@ class StockChartViewModel: ObservableObject {
         
         Publishers.CombineLatest(vmPickerFrequency.$selectedOption, vmPickerInterval.$selectedOption)
             .sink { [weak self] newFrequency, newInterval in
-                self?.prepareData(with: newFrequency, and: newInterval)
+                guard let self else { return }
+                Task {
+                    await self.prepareData(with: newFrequency, and: newInterval)
+                }
             }
             .store(in: &cancellables)
         
@@ -74,28 +78,24 @@ class StockChartViewModel: ObservableObject {
     /// - Parameters:
     ///   - frequency: The selected graph function (e.g., TIME_SERIES_INTRADAY).
     ///   - interval: The selected graph interval (e.g., 1 minute, 5 minutes).
-    private func prepareData(with frequency: GraphFunction, and interval: GraphInterval) {
-        loading = true
-        alphaVantageAPI.graphData(
-            of: stock.symbol,
-            with: frequency,
-            and: interval
-        ) { [weak self] (result: Result<AlphaGraphData, NetworkError>) in
-            guard let self = self else { return }
+    private func prepareData(with frequency: GraphFunction, and interval: GraphInterval) async {
+        self.loading = true
+        do {
+            // Fetch the graph data using async/await
+            let graphData = try await alphaVantageAPI.graphData(of: stock.symbol, with: frequency, and: interval)
+            self.loading = false
             
-            DispatchQueue.main.async {
-                self.loading = false
-                switch result {
-                case .success(let graphData):
-                    if let info = graphData.information {
-                        self.errorMessage = info
-                    } else {
-                        self.stockData = self.prepareData(from: graphData)
-                    }
-                case .failure(let error):
-                    self.errorMessage = "Failed to fetch data: \(error.localizedDescription)"
-                }
+            if let info = graphData.information {
+                self.errorMessage = info
+            } else {
+                self.stockData = self.prepareData(from: graphData)
             }
+            
+        } catch {
+            // Handle network-related errors
+            self.loading = false
+            self.errorMessage = "Failed to fetch data: \(error.localizedDescription)"
+            
         }
     }
     

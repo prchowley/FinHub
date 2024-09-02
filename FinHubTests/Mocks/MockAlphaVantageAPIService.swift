@@ -33,23 +33,21 @@ class MockAlphaVantageAPIService: AlphaVantageAPIService {
     ///   - stockSymbol: The stock symbol for which the graph data is requested.
     ///   - frequency: The frequency of the data (e.g., intraday, daily).
     ///   - interval: The interval at which data points are returned (e.g., 1 minute, 5 minutes).
-    ///   - completion: A closure that is called with the result of the request. It provides either
-    ///     the graph data or an error.
-    func graphData(of stockSymbol: String, with frequency: GraphFunction, and interval: GraphInterval, completion: @escaping (Result<AlphaGraphData, NetworkError>) -> Void) {
+    /// - Returns: The `AlphaGraphData` object containing the graph data.
+    func graphData(of stockSymbol: String, with frequency: GraphFunction, and interval: GraphInterval) async throws -> AlphaGraphData {
         // Simulate a delay to mimic real network response time.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            switch self.mockData {
-            case .success(let graphData):
-                // Return the simulated successful data.
-                completion(.success(graphData))
-            case .error(let error):
-                // Return the simulated error.
-                completion(.failure(error))
-            case .none:
-                // Return a default error if no mock data is provided.
-                let error = NSError(domain: "MockAlphaVantageAPIServiceError", code: 0, userInfo: [NSLocalizedDescriptionKey: "No mock data provided"])
-                completion(.failure(.unknown(error: error)))
-            }
+        try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+        
+        switch mockData {
+        case .success(let graphData):
+            // Return the simulated successful data.
+            return graphData
+        case .error(let error):
+            // Throw the simulated error.
+            throw error
+        case .none:
+            // Throw a default error if no mock data is provided.
+            throw NetworkError.unknown(error: NSError(domain: "MockAlphaVantageAPIServiceError", code: 0, userInfo: [NSLocalizedDescriptionKey: "No mock data provided"]))
         }
     }
 }

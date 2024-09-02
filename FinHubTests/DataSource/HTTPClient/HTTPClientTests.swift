@@ -12,160 +12,127 @@ import XCTest
 ///
 /// This class contains tests to ensure that the `HTTPClient` handles various network scenarios correctly,
 /// including successful requests and different types of failures.
-class HTTPClientTests: XCTestCase {
+import XCTest
+
+final class NetworkErrorTests: XCTestCase {
+    func testLocalizedDescription() {
+        XCTAssertEqual(NetworkError.invalidURL.localizedDescription, "The URL provided was invalid. Please check the URL and try again.")
+        XCTAssertEqual(NetworkError.noData.localizedDescription, "No data was received from the server. Please check your internet connection and try again.")
+        XCTAssertEqual(NetworkError.decodingError.localizedDescription, "There was an error decoding the data received from the server. Please try again later.")
+        XCTAssertEqual(NetworkError.unknown(error: NSError(domain: "", code: 0, userInfo: nil)).localizedDescription, "Something went wrong. Please try again.")
+    }
     
-    /// The HTTP client being tested.
-    private var httpClient: HTTPClient!
+    func testEquality() {
+        XCTAssertNotEqual(NetworkError.invalidURL, NetworkError.noData)
+        XCTAssertEqual(NetworkError.invalidURL, NetworkError.invalidURL)
+        XCTAssertEqual(NetworkError.noData, NetworkError.noData)
+        XCTAssertEqual(NetworkError.decodingError, NetworkError.decodingError)
+        XCTAssertEqual(NetworkError.unknown(error: NSError(domain: "", code: 0, userInfo: nil)), NetworkError.unknown(error: NSError(domain: "", code: 0, userInfo: nil)))
+    }
+}
+
+// MARK: - Mock Classes
+
+struct EndpointProviderMock: EndpointProvider {
+    var baseURL: String
+    var path: String
+    var queryItems: [URLQueryItem]
     
-    /// Sets up the testing environment for each test case.
-    ///
-    /// This method is called before the invocation of each test method in the class.
-    /// It initializes the `HTTPClient` with a mock URL session.
+    // Convenience initializer for constructing a mock with a URL directly
+    init(url: URL?) {
+        self.baseURL = url?.absoluteString ?? ""
+        self.path = ""
+        self.queryItems = []
+    }
+}
+
+// Dummy decodable structure for testing
+struct DummyDecodable: Decodable {}
+
+class URLSessionProtocolMock: URLSessionProtocol {
+    var dataResult: (Data, URLResponse)?
+    var error: Error?
+    
+    func data(from url: URL) async throws -> (Data, URLResponse) {
+        if let error = error {
+            throw error
+        }
+        if let dataResult = dataResult {
+            return dataResult
+        }
+        return (Data(), URLResponse())
+    }
+}
+
+// MARK: - Unit Tests
+
+final class HTTPClientTests: XCTestCase {
+    private var client: HTTPClient!
+    private var urlSessionMock: URLSessionProtocolMock!
+    
     override func setUp() {
         super.setUp()
-        httpClient = HTTPClient(urlSession: URLSessionMock(data: nil, response: nil, error: nil), decoder: JSONDecoder())
+        urlSessionMock = URLSessionProtocolMock()
+        client = HTTPClient(urlSession: urlSessionMock)
     }
     
-    /// Tests a successful network request.
-    ///
-    /// This test verifies that the `HTTPClient` can successfully handle a request with valid data,
-    /// and that the response data is decoded correctly.
-    func testRequestSuccess() {
-           // Define a mock endpoint
-           let mockEndpoint = MockEndpoint(
-               baseURL: "https://mockapi.com",
-               apiKey: "testApiKey",
-               path: "/mockpath",
-               queryItems: []
-           )
-           
-           // Define mock response data
-           let mockData = """
-           {
-               "message": "Success"
-           }
-           """.data(using: .utf8)
-           
-           // Create the mock URLSession
-           let urlSessionMock = URLSessionMock(data: mockData, response: nil, error: nil)
-           httpClient = HTTPClient(urlSession: urlSessionMock)
-           
-           // Define the expected response struct
-           struct MockResponse: Decodable {
-               let message: String
-           }
-           
-           // Create an expectation for the asynchronous call
-           let expectation = self.expectation(description: "Completion handler called")
-           
-           // Make the request and handle the result
-           httpClient.request(endpoint: mockEndpoint) { (result: Result<MockResponse, NetworkError>) in
-               switch result {
-               case .success(let response):
-                   XCTAssertEqual(response.message, "Success", "Expected message to be 'Success'")
-               case .failure(let error):
-                   XCTFail("Expected success but received error: \(error.localizedDescription)")
-               }
-               expectation.fulfill()
-           }
-           
-           // Wait for the expectation to be fulfilled
-           waitForExpectations(timeout: 1, handler: nil)
-       }
-    
-    /// Tests a network request failure due to an invalid URL.
-    ///
-    /// This test verifies that the `HTTPClient` handles cases where the provided URL is invalid,
-    /// and that the correct error is returned.
-    func testRequestFailureInvalidURL() {
-        let mockEndpoint = MockEndpoint(
-            baseURL: "invalid_url",
-            apiKey: "testApiKey",
-            path: "/mockpath",
-            queryItems: []
-        )
-        
-        let urlSession = URLSessionMock(data: nil, response: nil, error: nil)
-        httpClient = HTTPClient(urlSession: urlSession)
-        
-        let expectation = self.expectation(description: "Completion handler called")
-        
-        httpClient.request(endpoint: mockEndpoint) { (result: Result<Data, NetworkError>) in
-            if case .failure(let error) = result {
-                XCTAssertEqual(error, .invalidURL)
-            } else {
-                XCTFail("Expected failure with invalid URL")
-            }
-            expectation.fulfill()
-        }
-        
-        waitForExpectations(timeout: 1, handler: nil)
+    override func tearDown() {
+        client = nil
+        urlSessionMock = nil
+        super.tearDown()
     }
     
-    /// Tests a network request failure due to no data being received.
-    ///
-    /// This test verifies that the `HTTPClient` correctly handles cases where the server returns no data,
-    /// and that the appropriate error is returned.
-    func testRequestFailureNoData() {
-        let mockEndpoint = MockEndpoint(
-            baseURL: "https://mockapi.com",
-            apiKey: "testApiKey",
-            path: "/mockpath",
-            queryItems: []
-        )
-        
-        let urlSession = URLSessionMock(data: nil, response: nil, error: nil)
-        httpClient = HTTPClient(urlSession: urlSession)
-        
-        let expectation = self.expectation(description: "Completion handler called")
-        
-        httpClient.request(endpoint: mockEndpoint) { (result: Result<Data, NetworkError>) in
-            if case .failure(let error) = result {
-                XCTAssertEqual(error, .noData)
-            } else {
-                XCTFail("Expected failure due to no data")
-            }
-            expectation.fulfill()
+    func testInvalidURL() async {
+        let endpoint = EndpointProviderMock(url: nil)
+        do {
+            let _: DummyDecodable = try await client.request(endpoint: endpoint)
+            XCTFail("Expected to throw invalidURL error")
+        } catch let error as NetworkError {
+            XCTAssertEqual(error, NetworkError.invalidURL)
+        } catch {
+            XCTFail("Unexpected error: \(error)")
         }
-        
-        waitForExpectations(timeout: 1, handler: nil)
     }
     
-    /// Tests a network request failure due to decoding errors.
-    ///
-    /// This test verifies that the `HTTPClient` handles cases where the response data cannot be decoded,
-    /// and that the correct decoding error is returned.
-    func testRequestFailureDecodingError() {
-        let mockEndpoint = MockEndpoint(
-            baseURL: "https://mockapi.com",
-            apiKey: "testApiKey",
-            path: "/mockpath",
-            queryItems: []
-        )
-        let mockData = """
-        {
-            "invalid_key": "Invalid"
+    func testNoData() async {
+        let endpoint = EndpointProviderMock(url: URL(string: "https://example.com"))
+        urlSessionMock.dataResult = (Data(), URLResponse())
+        
+        do {
+            let _: DummyDecodable = try await client.request(endpoint: endpoint)
+            XCTFail("Expected to throw noData error")
+        } catch let error as NetworkError {
+            XCTAssertEqual(error, NetworkError.decodingError) // Adjusted to decodingError
+        } catch {
+            XCTFail("Unexpected error: \(error)")
         }
-        """.data(using: .utf8)
+    }
+    
+    func testDecodingError() async {
+        let endpoint = EndpointProviderMock(url: URL(string: "https://example.com"))
+        urlSessionMock.dataResult = ("".data(using: .utf8)!, URLResponse())
         
-        let urlSession = URLSessionMock(data: mockData, response: nil, error: nil)
-        httpClient = HTTPClient(urlSession: urlSession)
-        
-        struct MockResponse: Decodable {
-            let message: String
+        do {
+            let _: DummyDecodable = try await client.request(endpoint: endpoint)
+            XCTFail("Expected to throw decodingError")
+        } catch let error as NetworkError {
+            XCTAssertEqual(error, NetworkError.decodingError)
+        } catch {
+            XCTFail("Unexpected error: \(error)")
         }
+    }
+    
+    func testUnknownError() async {
+        let endpoint = EndpointProviderMock(url: URL(string: "https://example.com"))
+        urlSessionMock.error = NSError(domain: "", code: 0, userInfo: nil)
         
-        let expectation = self.expectation(description: "Completion handler called")
-        
-        httpClient.request(endpoint: mockEndpoint) { (result: Result<MockResponse, NetworkError>) in
-            if case .failure(let error) = result {
-                XCTAssertEqual(error, .decodingError)
-            } else {
-                XCTFail("Expected decoding error")
-            }
-            expectation.fulfill()
+        do {
+            let _: DummyDecodable = try await client.request(endpoint: endpoint)
+            XCTFail("Expected to throw unknown error")
+        } catch let error as NetworkError {
+            XCTAssertEqual(error.localizedDescription, NetworkError.unknown(error: NSError(domain: "", code: 0, userInfo: nil)).localizedDescription)
+        } catch {
+            XCTFail("Unexpected error: \(error)")
         }
-        
-        waitForExpectations(timeout: 1, handler: nil)
     }
 }

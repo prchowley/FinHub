@@ -14,7 +14,7 @@ struct ContentView: View {
     
     @StateObject private var viewModel = ContentViewModel()
     @State private var searchText: String = ""
-    
+    @State private var hasLoadedData: Bool = false
     @Namespace private var namespace
     
     /// Creates the view that displays the content.
@@ -64,6 +64,14 @@ struct ContentView: View {
             .navigationTitle("Stocks")
             .navigationBarTitleDisplayMode(.inline)
             .endEditingOnTap()
+        }
+        .onAppear {
+            if !hasLoadedData{
+                Task {
+                    await viewModel.prepareData()
+                    hasLoadedData = true
+                }
+            }
         }
     }
 }

@@ -8,65 +8,77 @@
 @testable import FinHub
 import XCTest
 
-/// A mock implementation of `EndpointProvider` for testing purposes.
-class MockEndpoint: EndpointProvider, APIKeyProvider {
-    /// The base URL for the endpoint.
-    var baseURL: String
-    /// The API key for accessing the endpoint.
-    var apiKey: String
-    /// The path component of the endpoint URL.
-    var path: String
-    /// The query items to be included in the endpoint URL.
-    var queryItems: [URLQueryItem]
+final class EndpointProviderTests: XCTestCase {
+    struct MockEndpoint: EndpointProvider {
+        var baseURL: String
+        var path: String
+        var queryItems: [URLQueryItem]
+    }
     
-    /// Initializes a new instance of `MockEndpoint`.
-    ///
-    /// - Parameters:
-    ///   - baseURL: The base URL for the endpoint.
-    ///   - apiKey: The API key for accessing the endpoint.
-    ///   - path: The path component of the endpoint URL.
-    ///   - queryItems: The query items to be included in the endpoint URL.
-    init(baseURL: String, apiKey: String, path: String, queryItems: [URLQueryItem]) {
-        self.baseURL = baseURL
-        self.apiKey = apiKey
-        self.path = path
-        self.queryItems = queryItems
+    func testURLConstruction() {
+        let endpoint = MockEndpoint(
+            baseURL: "https://api.example.com",
+            path: "/v1/resource",
+            queryItems: [
+                URLQueryItem(name: "param1", value: "value1"),
+                URLQueryItem(name: "param2", value: "value2")
+            ]
+        )
+        
+        let expectedURL = URL(string: "https://api.example.com/v1/resource?param1=value1&param2=value2")
+        XCTAssertEqual(endpoint.url, expectedURL)
+    }
+    
+    func testURLConstructionWithInvalidBaseURL() {
+        let endpoint = MockEndpoint(
+            baseURL: "invalid_url",
+            path: "/v1/resource",
+            queryItems: []
+        )
+        
+        XCTAssertNil(endpoint.url)
+    }
+    
+    func testURLConstructionWithoutSchemeOrHost() {
+        let endpoint = MockEndpoint(
+            baseURL: "example.com/v1/resource",
+            path: "",
+            queryItems: []
+        )
+        
+        XCTAssertNil(endpoint.url)
+    }
+    
+    func testURLConstructionWithEmptyPathAndQueryItems() {
+        let endpoint = MockEndpoint(
+            baseURL: "https://api.example.com",
+            path: "",
+            queryItems: []
+        )
+        
+        let expectedURL = URL(string: "https://api.example.com")
+        XCTAssertEqual(endpoint.url, expectedURL)
+    }
+    
+    func testURLConstructionWithPathWithoutLeadingSlash() {
+        let endpoint = MockEndpoint(
+            baseURL: "https://api.example.com",
+            path: "v1/resource",
+            queryItems: []
+        )
+        
+        let expectedURL = URL(string: "https://api.example.com/v1/resource")
+        XCTAssertEqual(endpoint.url, expectedURL)
     }
 }
 
-/// A concrete implementation of `EndpointProvider` for testing purposes.
-struct TestEndpoint: EndpointProvider, APIKeyProvider {
-    /// The base URL for the endpoint.
-    var baseURL: String
-    /// The API key for accessing the endpoint.
-    var apiKey: String
-    /// The path component of the endpoint URL.
-    var path: String
-    /// The query items to be included in the endpoint URL.
-    var queryItems: [URLQueryItem]
-}
-
-/// Unit tests for `EndpointProvider` implementations.
-class EndpointProviderTests: XCTestCase {
+final class APIKeyProviderTests: XCTestCase {
+    struct MockAPIKeyProvider: APIKeyProvider {
+        var apiKey: String
+    }
     
-    /// Tests the URL construction of an `EndpointProvider`.
-    func testURLConstruction() {
-        // Arrange: Set up the query items and endpoint
-        let queryItems = [
-            URLQueryItem(name: "key", value: "value"),
-            URLQueryItem(name: "anotherKey", value: "anotherValue")
-        ]
-        let endpoint = TestEndpoint(
-            baseURL: "https://example.com",
-            apiKey: "test_api_key",
-            path: "/test/path",
-            queryItems: queryItems
-        )
-        
-        // The expected URL string after construction
-        let expectedURLString = "https://example.com/test/path?key=value&anotherKey=anotherValue"
-        
-        // Act & Assert: Verify the constructed URL matches the expected URL string
-        XCTAssertEqual(endpoint.url?.absoluteString, expectedURLString)
+    func testAPIKey() {
+        let apiKeyProvider = MockAPIKeyProvider(apiKey: "test_api_key")
+        XCTAssertEqual(apiKeyProvider.apiKey, "test_api_key")
     }
 }

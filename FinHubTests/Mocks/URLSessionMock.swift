@@ -33,34 +33,18 @@ final class URLSessionMock: URLSessionProtocol {
     ///   - url: The URL for the data task (ignored in this mock).
     ///   - completionHandler: The completion handler to call with mock data, response, and error.
     /// - Returns: A mock `URLSessionDataTaskProtocol` that triggers the completion handler.
-    func createDataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTaskProtocol {
-        return URLSessionDataTaskMock {
-            completionHandler(self.mockData, self.mockResponse, self.mockError)
+    func data(from url: URL) async throws -> (Data, URLResponse) {
+        // Simulate a delay to mimic real network response time.
+        try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+        
+        if let error = mockError {
+            throw error
         }
-    }
-}
-
-// MARK: - Mock Implementation of URLSessionDataTaskProtocol
-
-/// A mock implementation of `URLSessionDataTaskProtocol` for testing purposes.
-/// It simulates the behavior of a URLSession data task, allowing you to control when the completion handler is called.
-final class URLSessionDataTaskMock: URLSessionDataTaskProtocol {
-    private let closure: () -> Void
-    
-    /// Initializes a new instance of `URLSessionDataTaskMock`.
-    /// - Parameter closure: The closure to call when `resume` is invoked.
-    init(closure: @escaping () -> Void) {
-        self.closure = closure
-    }
-    
-    /// Simulates resuming the data task by calling the provided closure.
-    func resume() {
-        closure()
-    }
-    
-    /// Simulates canceling the data task.
-    /// - Note: This implementation does not handle cancellation. Add logic if needed.
-    func cancel() {
-        // Optionally handle cancellation if needed
+        
+        guard let data = mockData, let response = mockResponse else {
+            throw NetworkError.noData
+        }
+        
+        return (data, response)
     }
 }

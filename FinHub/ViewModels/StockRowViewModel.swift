@@ -11,6 +11,7 @@ import Foundation
 ///
 /// The `StockRowViewModel` interacts with the Finnhub API to fetch the company profile and, optionally, the stock quote
 /// for a given stock symbol. It also manages loading states and error messages for these operations.
+@MainActor
 class StockRowViewModel: ObservableObject {
     
     // MARK: - Properties
@@ -54,55 +55,52 @@ class StockRowViewModel: ObservableObject {
     ///   - stock: The stock symbol associated with this view model.
     ///   - isDetails: A boolean indicating whether detailed stock quote information should be fetched. Defaults to `false`.
     init(
-        finnhubAPI: FinhubAPIService = FinHubAPIProvider(),
+        finnhubAPI: FinhubAPIService = FinHubAPIProvider(httpClient: HTTPClient.shared),
         stock: StockSymbol,
         isDetails: Bool = false
     ) {
         self.finnhubAPI = finnhubAPI
         self.stock = stock
         self.isDetails = isDetails
-        prepareData()
     }
     
     // MARK: - Data Handling
-    
-    /// Fetches and processes the company profile and, optionally, the stock quote for the given stock symbol.
-    ///
-    /// Updates `loadingCompanyProfile`, `loadingStockQuote`, `companyProfile`, `companyQuote`, and error messages
-    /// based on the results of the fetch requests.
-    func prepareData() {
-        // Start fetching company profile
+    /// Fetches and processes the company profile for the given stock symbol.
+    /// Updates `loadingCompanyProfile`, `companyProfile`, and error messages based on the result of the fetch request.
+    @MainActor
+    func fetchCompanyProfile() async {
         loadingCompanyProfile = true
-        finnhubAPI.fetchCompanyProfile(symbol: stock.symbol) { [weak self] (result: Result<CompanyProfile, NetworkError>) in
-            guard let self = self else { return }
-            
-            DispatchQueue.main.async {
-                self.loadingCompanyProfile = false
-                switch result {
-                case .success(let profile):
-                    self.companyProfile = profile
-                case .failure:
-                    self.errorMessageCompanyProfile = "Error: Failed to fetch profile"
-                }
-            }
+        do {
+            let profile = try await finnhubAPI.fetchCompanyProfile(symbol: stock.symbol)
+            self.companyProfile = profile
+        } catch {
+            self.errorMessageCompanyProfile = "Error: Failed to fetch profile"
         }
-        
-        // Conditionally fetch stock quote if details are requested
+        self.loadingCompanyProfile = false
+    }
+
+    /// Fetches and processes the stock quote for the given stock symbol if details are requested.
+    /// Updates `loadingStockQuote`, `companyQuote`, and error messages based on the result of the fetch request.
+    @MainActor
+    func fetchStockQuote() async {
+        guard isDetails else { return }
+        loadingStockQuote = true
+        do {
+            let companyQuote = try await finnhubAPI.fetchStockQuote(symbol: stock.symbol)
+            self.companyQuote = companyQuote
+        } catch {
+            self.errorMessageStockQuote = "Error: Failed to fetch stock quote"
+        }
+        self.loadingStockQuote = false
+    }
+
+    /// Prepares the data by fetching the company profile and, if requested, the stock quote for the given stock symbol.
+    /// This function calls `fetchCompanyProfile` and `fetchStockQuote` to handle the data fetching.
+    @MainActor
+    func prepareData() async {
+        await fetchCompanyProfile()
         if isDetails {
-            loadingStockQuote = true
-            finnhubAPI.fetchStockQuote(symbol: stock.symbol) { [weak self] (result: Result<StockQuote, NetworkError>) in
-                guard let self = self else { return }
-                
-                DispatchQueue.main.async {
-                    self.loadingStockQuote = false
-                    switch result {
-                    case .success(let companyQuote):
-                        self.companyQuote = companyQuote
-                    case .failure:
-                        self.errorMessageStockQuote = "Error: Failed to fetch stock quote"
-                    }
-                }
-            }
+            await fetchStockQuote()
         }
     }
 }

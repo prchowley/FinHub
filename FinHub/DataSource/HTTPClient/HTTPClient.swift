@@ -7,7 +7,7 @@
 
 import Foundation
 
-// MARK: - Error Handling
+// MARK: - NetworkError
 
 /// An enumeration representing errors that can occur during network operations.
 ///
@@ -39,7 +39,7 @@ enum NetworkError: Error {
         case .decodingError:
             return "There was an error decoding the data received from the server. Please try again later."
         case .unknown:
-            return "Something went wrong. Please try again"
+            return "Something went wrong. Please try again."
         }
     }
 }
@@ -50,161 +50,86 @@ extension NetworkError: Equatable {
     }
 }
 
-// MARK: - Protocols
+// MARK: - Protocol Definitions
 
-/// A protocol defining the interface for making network requests.
-///
-/// Conformers to this protocol are expected to implement a method for sending a request to a specified endpoint
-/// and handling the response.
-protocol HTTPClientProtocol {
-    
-    /// Sends a request to the specified endpoint and decodes the response.
-    ///
-    /// - Parameters:
-    ///   - endpoint: The endpoint to send the request to, which should provide a URL.
-    ///   - completion: A closure that is called with the result of the request. It contains either
-    ///     the decoded response or an error.
-    func request<T: Decodable>(endpoint: EndpointProvider, completion: @escaping (Result<T, NetworkError>) -> Void)
-}
-
-/// A protocol defining the interface for a data task.
-///
-/// Conformers to this protocol should provide methods to resume or cancel the data task.
 protocol URLSessionDataTaskProtocol {
     /// Starts or resumes the data task.
     func resume()
     
     /// Cancels the data task.
     func cancel()
+    func request<T: Decodable>(endpoint: EndpointProvider) async throws -> T
+}
+
+/// A protocol defining the interface for network requests.
+protocol HTTPClientProtocol {
+    func request<T: Decodable>(endpoint: EndpointProvider) async throws -> T
 }
 
 /// A protocol defining the interface for creating data tasks.
-///
-/// Conformers to this protocol should implement a method to create a data task with a specified URL and completion handler.
 protocol URLSessionProtocol {
-    
-    /// Creates a data task with the specified URL and completion handler.
-    ///
-    /// - Parameters:
-    ///   - url: The URL for the data task.
-    ///   - completionHandler: A closure that is called with the result of the data task. It includes data, response, and error.
-    /// - Returns: A data task conforming to `URLSessionDataTaskProtocol`.
-    func createDataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTaskProtocol
+    func data(from url: URL) async throws -> (Data, URLResponse)
 }
 
-// MARK: - Adapters
+// MARK: - URLSession Adapter
 
-/// An adapter class that wraps a `URLSessionDataTask` to conform to `URLSessionDataTaskProtocol`.
-///
-/// This adapter allows `URLSessionDataTask` to be used interchangeably with `URLSessionDataTaskProtocol` in tests or other code
-/// that relies on protocol-based programming.
-final class URLSessionDataTaskAdapter: URLSessionDataTaskProtocol {
+/// A class that adapts `URLSession` to conform to `URLSessionProtocol`.
+final class URLSessionAdapter: URLSessionProtocol {
+    private let session: URLSession
     
-    /// The underlying `URLSessionDataTask` instance.
-    private let task: URLSessionDataTask
-    
-    /// Initializes a new instance of `URLSessionDataTaskAdapter`.
-    ///
-    /// - Parameter task: The `URLSessionDataTask` to wrap.
-    init(task: URLSessionDataTask) {
-        self.task = task
+    init(session: URLSession = .shared) {
+        self.session = session
     }
     
-    /// Starts or resumes the data task.
-    func resume() {
-        task.resume()
-    }
-    
-    /// Cancels the data task.
-    func cancel() {
-        task.cancel()
+    func data(from url: URL) async throws -> (Data, URLResponse) {
+        return try await session.data(from: url)
     }
 }
 
-// MARK: - Extensions
+// MARK: - HTTPClient Implementation
 
-extension URLSession: URLSessionProtocol {
-    
-    /// Creates a data task with the specified URL and completion handler.
-    ///
-    /// - Parameters:
-    ///   - url: The URL for the data task.
-    ///   - completionHandler: A closure that is called with the result of the data task. It includes data, response, and error.
-    /// - Returns: A data task conforming to `URLSessionDataTaskProtocol`.
-    func createDataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTaskProtocol {
-        let task = self.dataTask(with: url, completionHandler: completionHandler)
-        return URLSessionDataTaskAdapter(task: task)
-    }
-}
-
-// MARK: - HTTP Client
-
-/// A class that implements `HTTPClientProtocol` to perform network requests.
-///
-/// This class uses an instance of `URLSessionProtocol` to perform requests and a `JSONDecoder` to decode the response data.
-class HTTPClient: HTTPClientProtocol {
-    
-    /// The session used to perform network requests.
-    private let urlSession: URLSessionProtocol
-    
-    /// The decoder used to decode response data.
+/// A class that implements `HTTPClientProtocol` using a dependency-injected `URLSessionProtocol`.
+final class HTTPClient: HTTPClientProtocol {
+    var urlSession: URLSessionProtocol
     private let decoder: JSONDecoder
-
-    /// Initializes a new instance of `HTTPClient`.
-    ///
-    /// - Parameters:
-    ///   - urlSession: The session to use for performing network requests (default is `URLSession.shared`).
-    ///   - decoder: The decoder to use for decoding response data (default is `JSONDecoder()`).
-    init(urlSession: URLSessionProtocol = URLSession.shared, decoder: JSONDecoder = JSONDecoder()) {
+    
+    static let shared = HTTPClient()
+    
+    init(
+        urlSession: URLSessionProtocol = URLSessionAdapter(),
+        decoder: JSONDecoder = JSONDecoder()
+    ) {
         self.urlSession = urlSession
         self.decoder = decoder
     }
-
-    /// Sends a request to the specified endpoint and decodes the response.
-    ///
-    /// - Parameters:
-    ///   - endpoint: The endpoint to send the request to.
-    ///   - completion: A closure that is called with the result of the request. It contains either
-    ///     the decoded response or an error.
-    func request<T: Decodable>(endpoint: EndpointProvider, completion: @escaping (Result<T, NetworkError>) -> Void) {
+    
+    func request<T: Decodable>(endpoint: EndpointProvider) async throws -> T {
         guard let url = endpoint.url else {
-            completion(.failure(NetworkError.invalidURL))
-            return
+            throw NetworkError.invalidURL
         }
-
+        
+        return try await requestAPI(url: url)
+    }
+    
+    private func requestAPI<T: Decodable>(url: URL) async throws -> T {
         debugPrint("⬆️ Request URL: \(url)")
-
-        let task = urlSession.createDataTask(with: url) { [weak self] data, response, error in
-            if let error = error {
-                debugPrint("❌ Request Error: \(error.localizedDescription)")
-                completion(.failure(.unknown(error: error)))
-                return
-            }
+        
+        do {
+            let (data, response) = try await urlSession.data(from: url)
             
             if let httpResponse = response as? HTTPURLResponse {
                 debugPrint("📡 Response Status Code: \(httpResponse.statusCode)")
                 debugPrint("📡 Response Headers: \(httpResponse.allHeaderFields)")
             }
-
-            guard let data = data else {
-                debugPrint("⚠️ No Data Received")
-                completion(.failure(NetworkError.noData))
-                return
-            }
-
-            do {
-                let decodedData = try self?.decoder.decode(T.self, from: data)
-                if let decodedData = decodedData {
-                    completion(.success(decodedData))
-                } else {
-                    debugPrint("⚠️ Data Decoding Error")
-                    completion(.failure(NetworkError.decodingError))
-                }
-            } catch {
-                debugPrint("❌ Decoding Error: \(error.localizedDescription)")
-                completion(.failure(NetworkError.decodingError))
-            }
+            
+            return try decoder.decode(T.self, from: data)
+            
+        } catch is DecodingError {
+            debugPrint("❌ Decoding Error")
+            throw NetworkError.decodingError
+        } catch {
+            debugPrint("❌ Network Error: \(error.localizedDescription)")
+            throw NetworkError.unknown(error: error)
         }
-        task.resume()
     }
 }

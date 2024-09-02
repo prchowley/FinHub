@@ -36,29 +36,27 @@ class MockAlphaVantageHTTPClient: HTTPClientProtocol {
     ///
     /// - Parameters:
     ///   - endpoint: The endpoint to which the request is sent.
-    ///   - completion: A closure that is called with the result of the request. It provides either
-    ///     the decoded response or an error.
-    func request<T: Decodable>(endpoint: EndpointProvider, completion: @escaping (Result<T, NetworkError>) -> Void) {
+    /// - Returns: The decoded response of the request.
+    func request<T: Decodable>(endpoint: EndpointProvider) async throws -> T {
         // Indicate that the request method was called.
         requestCalled = true
 
         guard let mockData = mockData else {
-            // No mock data provided, return a default error.
-            let error = NSError(domain: "MockHTTPClientError", code: 0, userInfo: [NSLocalizedDescriptionKey: "No mock data provided"])
-            completion(.failure(.unknown(error: error)))
-            return
+            // No mock data provided, throw an error.
+            throw NetworkError.unknown(error: NSError(domain: "MockHTTPClientError", code: 0, userInfo: [NSLocalizedDescriptionKey: "No mock data provided"]))
         }
 
         switch mockData {
         case .alphaGraphData(let graphData):
             // Cast the mock data to the expected type and return success.
-            let result: Result<T, NetworkError> = .success(graphData as! T)
-            completion(result)
+            guard let result = graphData as? T else {
+                throw NetworkError.decodingError
+            }
+            return result
 
         case .error(let error):
-            // Return the provided error.
-            let result: Result<T, NetworkError> = .failure(.unknown(error: error))
-            completion(result)
+            // Throw the provided error.
+            throw error
         }
     }
 }

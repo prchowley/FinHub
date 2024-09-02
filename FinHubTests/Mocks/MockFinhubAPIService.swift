@@ -33,94 +33,71 @@ class MockFinhubAPIService: FinhubAPIService {
     
     /// Simulates fetching stock symbols.
     ///
-    /// - Parameter completion: A closure that is called with the result of the request. It provides either
-    ///   the fetched stock symbols or an error.
-    func fetchStockSymbols(completion: @escaping (Result<[StockSymbol], NetworkError>) -> Void) {
-        handleMockData(completion: completion)
+    /// - Returns: An array of `StockSymbol` objects.
+    func fetchStockSymbols() async throws -> [StockSymbol] {
+        try await handleMockData()
     }
     
     /// Simulates searching for stocks based on a query.
     ///
-    /// - Parameters:
-    ///   - query: The search query to find stocks.
-    ///   - completion: A closure that is called with the result of the request. It provides either
-    ///     the search result or an error.
-    func searchStocks(query: String, completion: @escaping (Result<StockSearchResult, NetworkError>) -> Void) {
-        handleMockData(completion: completion)
+    /// - Parameter query: The search query to find stocks.
+    /// - Returns: A `StockSearchResult` object.
+    func searchStocks(query: String) async throws -> StockSearchResult {
+        try await handleMockData()
     }
     
     /// Simulates fetching a company profile for a given stock symbol.
     ///
-    /// - Parameters:
-    ///   - symbol: The stock symbol for which to fetch the company profile.
-    ///   - completion: A closure that is called with the result of the request. It provides either
-    ///     the company profile or an error.
-    func fetchCompanyProfile(symbol: String, completion: @escaping (Result<CompanyProfile, NetworkError>) -> Void) {
-        if let data = mockData {
-            switch data {
-            case .companyProfile(let profile):
-                completion(.success(profile))
-            case .error(let error):
-                completion(.failure(.unknown(error: error)))
-            default:
-                // Handle cases where the mock data does not match.
-                break
-            }
-        } else {
-            // No mock data provided, return an error.
-            completion(.failure(.unknown(error: NSError(domain: "MockFinhubAPIServiceError", code: 0, userInfo: [NSLocalizedDescriptionKey: "No mock data provided"]))))
+    /// - Parameter symbol: The stock symbol for which to fetch the company profile.
+    /// - Returns: A `CompanyProfile` object.
+    func fetchCompanyProfile(symbol: String) async throws -> CompanyProfile {
+        switch mockData {
+        case .companyProfile(let profile):
+            return profile
+        case .error(let error):
+            throw NetworkError.unknown(error: error)
+        default:
+            throw NetworkError.unknown(error: NSError(domain: "MockFinhubAPIServiceError", code: 0, userInfo: [NSLocalizedDescriptionKey: "No mock data provided"]))
         }
     }
     
     /// Simulates fetching a stock quote for a given stock symbol.
     ///
-    /// - Parameters:
-    ///   - symbol: The stock symbol for which to fetch the stock quote.
-    ///   - completion: A closure that is called with the result of the request. It provides either
-    ///     the stock quote or an error.
-    func fetchStockQuote(symbol: String, completion: @escaping (Result<StockQuote, NetworkError>) -> Void) {
-        if let data = mockData {
-            switch data {
-            case .stockQuote(let quote):
-                completion(.success(quote))
-            case .error(let error):
-                completion(.failure(.unknown(error: error)))
-            default:
-                // Handle cases where the mock data does not match.
-                break
-            }
-        } else {
-            // No mock data provided, return an error.
-            completion(.failure(.unknown(error: NSError(domain: "MockFinhubAPIServiceError", code: 0, userInfo: [NSLocalizedDescriptionKey: "No mock data provided"]))))
+    /// - Parameter symbol: The stock symbol for which to fetch the stock quote.
+    /// - Returns: A `StockQuote` object.
+    func fetchStockQuote(symbol: String) async throws -> StockQuote {
+        switch mockData {
+        case .stockQuote(let quote):
+            return quote
+        case .error(let error):
+            throw NetworkError.unknown(error: error)
+        default:
+            throw NetworkError.unknown(error: NSError(domain: "MockFinhubAPIServiceError", code: 0, userInfo: [NSLocalizedDescriptionKey: "No mock data provided"]))
         }
     }
     
     /// Handles the mock data for various requests.
     ///
-    /// - Parameter completion: A closure that is called with the result of the request. It provides either
-    ///   the decoded response or an error.
+    /// - Returns: A result containing either the decoded response or an error.
     ///
     /// This method is used internally by `fetchStockSymbols` and `searchStocks` to simplify handling
     /// the mock data.
-    private func handleMockData<T>(completion: @escaping (Result<T, NetworkError>) -> Void) {
+    private func handleMockData<T>() async throws -> T {
         guard let mockData = mockData else {
-            // No mock data provided, return a default error.
-            let error = NSError(domain: "MockFinhubAPIServiceError", code: 0, userInfo: [NSLocalizedDescriptionKey: "No mock data provided"])
-            completion(.failure(.unknown(error: error)))
-            return
+            throw NetworkError.unknown(error: NSError(domain: "MockFinhubAPIServiceError", code: 0, userInfo: [NSLocalizedDescriptionKey: "No mock data provided"]))
         }
         
         switch mockData {
         case .stockSymbols(let symbols):
-            completion(.success(symbols as! T))
+            return symbols as! T
         case .stockSearchResult(let searchResult):
-            completion(.success(searchResult as! T))
+            return searchResult as! T
         case .companyProfile(let profile):
-            completion(.success(profile as! T))
+            return profile as! T
         case .stockQuote(let quote):
-            completion(.success(quote as! T))
+            return quote as! T
         case .error(let error):
-            completion(.failure(.unknown(error: error)))
+            throw NetworkError.unknown(error: error)
         }
     }
 }

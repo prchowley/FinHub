@@ -13,7 +13,7 @@ import SwiftUI
 struct StockRowView: View {
     
     @StateObject var viewModel: StockRowViewModel
-    
+        
     /// Creates the view that displays stock details.
     ///
     /// The view shows company profile information, stock quote, or appropriate loading/error messages. If not in detail mode, it includes a navigation link to detailed stock information.
@@ -77,5 +77,10 @@ struct StockRowView: View {
         }
         .background(viewModel.isDetails ? Color.clear : Color.white)
         .cornerRadius(16)
+        .onAppear {
+            Task {
+                await viewModel.prepareData()
+            }
+        }
     }
 }

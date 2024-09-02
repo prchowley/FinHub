@@ -19,11 +19,11 @@ class AlphaVantageAPIProviderTests: XCTestCase {
     /// The `AlphaVantageAPIProvider` instance under test.
     var apiProvider: AlphaVantageAPIProvider!
 
-    /// Mock implementation of `HTTPClient` used for testing.
+    /// Mock implementation of `HTTPClientProtocol` used for testing.
     var mockHTTPClient: MockAlphaVantageHTTPClient!
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         
         // Initialize the mock HTTP client and API provider before each test.
         mockHTTPClient = MockAlphaVantageHTTPClient()
@@ -34,7 +34,7 @@ class AlphaVantageAPIProviderTests: XCTestCase {
     ///
     /// Simulates a successful API response and verifies that the `AlphaVantageAPIProvider`
     /// correctly handles and returns the expected data.
-    func testGraphDataSuccess() {
+    func testGraphDataSuccess() async {
         // Arrange
         let metaData = MetaData(
             information: "Information",
@@ -65,14 +65,13 @@ class AlphaVantageAPIProviderTests: XCTestCase {
         let interval = GraphInterval.min1
         
         // Act
-        apiProvider.graphData(of: symbol, with: frequency, and: interval) { result in
-            switch result {
-            case .success(let data):
-                // Assert
-                XCTAssertEqual(data, expectedData, "The retrieved data should match the expected data")
-            case .failure(let error):
-                XCTFail("Expected success but got error: \(error)")
-            }
+        do {
+            let data = try await apiProvider.graphData(of: symbol, with: frequency, and: interval)
+            
+            // Assert
+            XCTAssertEqual(data, expectedData, "The retrieved data should match the expected data")
+        } catch {
+            XCTFail("Expected success but got error: \(error)")
         }
         
         // Assert
@@ -83,9 +82,9 @@ class AlphaVantageAPIProviderTests: XCTestCase {
     ///
     /// Simulates an error response from the HTTP client and verifies that the `AlphaVantageAPIProvider`
     /// correctly handles and returns the appropriate error.
-    func testGraphDataFailure() {
+    func testGraphDataFailure() async {
         // Arrange
-        let testError = NSError(domain: "TestError", code: 1, userInfo: nil)
+        let testError = NetworkError.unknown(error: NSError(domain: "TestError", code: 1, userInfo: nil))
         mockHTTPClient.mockData = .error(.unknown(error: testError))
         
         let symbol = "AAPL"
@@ -93,14 +92,12 @@ class AlphaVantageAPIProviderTests: XCTestCase {
         let interval = GraphInterval.min1
         
         // Act
-        apiProvider.graphData(of: symbol, with: frequency, and: interval) { result in
-            switch result {
-            case .success(let data):
-                XCTFail("Expected failure but got data: \(data)")
-            case .failure(let error):
-                // Assert
-                XCTAssertEqual(error, NetworkError.unknown(error: testError), "The error should match the expected error")
-            }
+        do {
+            _ = try await apiProvider.graphData(of: symbol, with: frequency, and: interval)
+            XCTFail("Expected failure but got data")
+        } catch {
+            // Assert
+            XCTAssertEqual(error as! NetworkError, testError, "The error should match the expected error")
         }
         
         // Assert

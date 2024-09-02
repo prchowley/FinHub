@@ -16,18 +16,18 @@ import Combine
 /// This test class validates the behavior and functionality of `StockChartViewModel`
 /// under different conditions such as initial state, successful data loading, and handling of failures.
 class StockChartViewModelTests: XCTestCase {
-
+    
     /// A set of cancellables used to manage Combine subscriptions.
     var cancellables = Set<AnyCancellable>()
-
+    
     /// Mock implementation of `AlphaVantageAPIService` used for testing.
     var mockAPIService: MockAlphaVantageAPIService!
-
+    
     /// The view model under test.
     var viewModel: StockChartViewModel!
-
-    override func setUp() {
-        super.setUp()
+    
+    override func setUp() async throws {
+        try await super.setUp()
         
         // Initialize the mock API service and view model before each test.
         mockAPIService = MockAlphaVantageAPIService()
@@ -47,9 +47,11 @@ class StockChartViewModelTests: XCTestCase {
         )
         
         // Initialize the view model with the mock API service and sample stock data.
-        viewModel = StockChartViewModel(alphaVantageAPI: mockAPIService, stock: stock)
+        viewModel = await Task { @MainActor in
+            StockChartViewModel(alphaVantageAPI: mockAPIService, stock: stock)
+        }.value
     }
-
+    
     override func tearDown() {
         // Clean up resources after each test.
         cancellables.removeAll()
@@ -57,11 +59,11 @@ class StockChartViewModelTests: XCTestCase {
         mockAPIService = nil
         super.tearDown()
     }
-
+    
     /// Tests the initial state of the view model.
     ///
     /// Verifies that the initial loading state is not nil and that the stock data is empty.
-    func testInitialState() {
+    @MainActor func testInitialState() {
         // Arrange
         let initialLoadingState = viewModel.loading
         let initialStockDataCount = viewModel.stockData.count
@@ -70,11 +72,11 @@ class StockChartViewModelTests: XCTestCase {
         XCTAssertNotNil(initialLoadingState, "Loading object should be present initially")
         XCTAssertTrue(initialStockDataCount == 0, "Stock data should be empty initially")
     }
-
+    
     /// Tests successful graph data loading.
     ///
     /// Simulates a successful API response and verifies that the view model updates its stock data correctly.
-    func testGraphDataSuccess() {
+    @MainActor func testGraphDataSuccess() async {
         // Arrange
         let metaData = MetaData(
             information: "Information",
@@ -128,13 +130,13 @@ class StockChartViewModelTests: XCTestCase {
             }
             .store(in: &cancellables)
         
-        waitForExpectations(timeout: 10, handler: nil)
+        await fulfillment(of: [expectation], timeout: 1)
     }
-
+    
     /// Tests failure in graph data loading.
     ///
     /// Simulates a failure response from the API and verifies that the view model handles the error correctly.
-    func testGraphDataFailure() {
+    @MainActor func testGraphDataFailure() async {
         // Arrange
         let testError = NSError(domain: "TestError", code: 1, userInfo: nil)
         mockAPIService.mockData = .error(.unknown(error: testError))
@@ -167,6 +169,6 @@ class StockChartViewModelTests: XCTestCase {
             }
             .store(in: &cancellables)
         
-        waitForExpectations(timeout: 1.0, handler: nil)
+        await fulfillment(of: [expectation], timeout: 1)
     }
 }
