@@ -121,7 +121,11 @@ final class HTTPClient: HTTPClientProtocol {
                 debugPrint("📡 Response Status Code: \(httpResponse.statusCode)")
                 debugPrint("📡 Response Headers: \(httpResponse.allHeaderFields)")
             }
-            
+
+            if T.self == Data.self, let dataResult = data as? T {
+                return dataResult
+            }
+
             return try decoder.decode(T.self, from: data)
             
         } catch is DecodingError {
