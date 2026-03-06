@@ -13,23 +13,30 @@ import SwiftUI
 struct CachedAsyncImage: View {
     /// The asynchronous image loader instance that handles image fetching and caching.
     @StateObject private var loader: AsyncImageLoader
-    /// The URL of the image to be loaded.
-    private let url: URL
-    
+
     /// Initializes the `CachedAsyncImage` with a specific URL.
-    /// - Parameter url: The URL of the image to load.
-    init(url: URL) {
-        self._loader = StateObject(wrappedValue: AsyncImageLoader(url: url))
-        self.url = url
+    /// - Parameters:
+    ///   - url: The URL of the image to load.
+    ///   - cache: The image cache to use.
+    ///   - session: The HTTP client to use for downloading the image.
+    init(
+        url: URL,
+        cache: ImageCaching,
+        session: HTTPClientProtocol
+    ) {
+        _loader = StateObject(
+            wrappedValue: AsyncImageLoader(
+                url: url,
+                cache: cache,
+                session: session
+            )
+        )
     }
     
     var body: some View {
         content
-            .onAppear {
-                // Trigger image loading when the view appears
-                Task {
-                    await loader.loadImage()
-                }
+            .task {
+                await loader.loadImage()
             }
     }
     

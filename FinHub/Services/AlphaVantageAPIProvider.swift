@@ -21,11 +21,18 @@ class AlphaVantageAPIProvider: AlphaVantageAPIService {
     
     /// The HTTP client used for making network requests.
     private let httpClient: HTTPClientProtocol
+    
+    /// The key service used to fetch the API key.
+    private let keyService: KeyService
 
     /// Initializes the `AlphaVantageAPIProvider` with a specified HTTP client.
     /// - Parameter httpClient: The HTTP client used to make network requests.
-    init(httpClient: HTTPClientProtocol) {
+    init(
+        httpClient: HTTPClientProtocol,
+        keyService: KeyService
+    ) {
         self.httpClient = httpClient
+        self.keyService = keyService
     }
 
     /// Fetches graph data for a given stock symbol with specified frequency and interval.
@@ -35,6 +42,13 @@ class AlphaVantageAPIProvider: AlphaVantageAPIService {
     ///   - interval: The interval for the data (e.g., 1min, 5min).
     /// - Returns: The `AlphaGraphData` object containing the graph data.
     func graphData(of stockSymbol: String, with frequency: GraphFunction, and interval: GraphInterval) async throws -> AlphaGraphData {
-        return try await httpClient.request(endpoint: AlphaVantageEndpoint(function: frequency, symbol: stockSymbol, interval: interval))
+        return try await httpClient.request(
+            endpoint: AlphaVantageEndpoint(
+                function: frequency,
+                symbol: stockSymbol,
+                interval: interval,
+                keyService: keyService
+            )
+        )
     }
 }

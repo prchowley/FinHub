@@ -37,7 +37,7 @@ struct FinnhubEndpoint: EndpointProvider {
     ///   - keyService: The key service to fetch the API key, default is `KeyProvider.shared`.
     init(
         endpointType: EndpointType,
-        keyService: KeyService = KeyProvider.shared
+        keyService: KeyService
     ) {
         self.endpointType = endpointType
         self.keyService = keyService

@@ -40,14 +40,6 @@ protocol KeyService {
 /// using the iOS keychain services. It is designed as a singleton to ensure a single instance across the app.
 class KeyProvider: KeyService {
     
-    /// The shared singleton instance of `KeyProvider`.
-    ///
-    /// Use this property to access the shared `KeyProvider` instance.
-    static let shared = KeyProvider()
-    
-    /// Private initializer to restrict instantiation from outside.
-    private init() { }
-    
     /// Retrieves the token for a specified key type.
     ///
     /// This method checks the keychain for the token associated with the given `KeyType`. If the token is not found,
@@ -90,7 +82,7 @@ class KeyProvider: KeyService {
             kSecMatchLimit as String: kSecMatchLimitOne
         ]
         var dataTypeRef: AnyObject?
-        let status = SecItemCopyMatching(query as CFDictionary, &dataTypeRef)
+        let status = unsafe SecItemCopyMatching(query as CFDictionary, &dataTypeRef)
         if status == errSecSuccess {
             if let data = dataTypeRef as? Data {
                 return String(data: data, encoding: .utf8)

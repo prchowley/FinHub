@@ -32,7 +32,7 @@ struct AlphaVantageEndpoint: EndpointProvider {
         function: GraphFunction,
         symbol: String,
         interval: GraphInterval,
-        keyService: KeyService = KeyProvider.shared
+        keyService: KeyService
     ) {
         self.function = function
         self.symbol = symbol

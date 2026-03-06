@@ -13,6 +13,23 @@ import SwiftUI
 struct StockRowView: View {
     
     @StateObject var viewModel: StockRowViewModel
+    
+    init(
+        finnhubAPI: FinhubAPIService,
+        stock: StockSymbol,
+        isDetails: Bool = false,
+        companyProfile: CompanyProfile? = nil
+    ) {
+        _viewModel = .init(
+            wrappedValue: .init(
+                finnhubAPI: finnhubAPI,
+                stock: stock,
+                isDetails: isDetails,
+                companyProfile: companyProfile
+            )
+        )
+    }
+
         
     /// Creates the view that displays stock details.
     ///
@@ -59,9 +76,7 @@ struct StockRowView: View {
                     Spacer()
                     NavigationLink(
                         destination: StockDetailsView(
-                            viewModel: StockDetailsViewModel(
-                                stock: viewModel.stock
-                            )
+                            rowModel: viewModel
                         )
                     ) {
                         Image(systemName: "chevron.right.circle.fill")

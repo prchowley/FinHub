@@ -16,29 +16,25 @@ protocol ImageCaching {
     /// - Parameters:
     ///   - image: The `UIImage` to be saved.
     ///   - key: A unique key to associate with the image.
-    func saveImage(_ image: UIImage, forKey key: String)
+    func saveImage(_ image: UIImage, forKey key: String) async
     
     /// Loads an image from the cache using a specified key.
     ///
     /// - Parameter key: The key associated with the image to be loaded.
     /// - Returns: The `UIImage` if found, otherwise `nil`.
-    func loadImage(forKey key: String) -> UIImage?
+    func loadImage(forKey key: String) async -> UIImage?
     
     /// Removes an image from the cache using a specified key.
     ///
     /// - Parameter key: The key associated with the image to be removed.
-    func removeImage(forKey key: String)
+    func removeImage(forKey key: String) async
 }
 
 /// A class for caching images using the file system.
 ///
 /// The `ImageCache` class implements the `ImageCaching` protocol and uses the file system to save, load, and remove
 /// images. It is designed as a singleton for easy access throughout the application.
-class ImageCache: ImageCaching {
-    /// The shared singleton instance of `ImageCache`.
-    ///
-    /// Use this property to access the shared `ImageCache` instance.
-    static let shared: ImageCaching = ImageCache()
+actor ImageCache: ImageCaching {
     
     private let fileManager: FileManager
     private let cacheDirectory: URL

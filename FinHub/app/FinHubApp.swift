@@ -14,22 +14,9 @@ import SwiftUI
 @main
 struct FinHubApp: App {
     
-     /// Initializes the FinHub application.
-     ///
-     /// This initializer is called when the app starts. It saves the API tokens using the provided key service.
-     ///
-     /// - Parameter service: The `KeyService` instance used to save the tokens. Defaults to `KeyProvider.shared`.
-     init(with service: KeyService = KeyProvider.shared) {
-         saveTokens(keyservice: service)
-     }
-     
-     /// Default initializer for `FinHubApp`.
-     ///
-     /// This initializer uses the default `KeyProvider.shared` service to save the API tokens.
-     init() {
-         self.init(with: KeyProvider.shared)
-     }
-    
+    @Environment(\.keyService) var keyService
+    @Environment(\.httpClient) var httpClient
+
     /// Saves the API tokens for different services.
     ///
     /// This method saves the tokens needed for accessing external APIs, such as Finnhub and Alpha Vantage.
@@ -45,7 +32,12 @@ struct FinHubApp: App {
     /// This property defines the initial view for the app, which is presented in the window group.
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(
+                finnhubAPI: FinHubAPIProvider(
+                    httpClient: httpClient,
+                    keyService: keyService
+                )
+            )
         }
     }
 }

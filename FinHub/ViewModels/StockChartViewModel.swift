@@ -52,13 +52,14 @@ class StockChartViewModel: ObservableObject {
     ///   - alphaVantageAPI: The service used to fetch graph data. Defaults to `AlphaVantageAPIProvider()`.
     ///   - stock: The `StockSymbol` for which to fetch the chart data.
     init(
-        alphaVantageAPI: AlphaVantageAPIService = AlphaVantageAPIProvider(httpClient: HTTPClient.shared),
+        alphaVantageAPI: AlphaVantageAPIService,
         stock: StockSymbol
     ) {
         self.alphaVantageAPI = alphaVantageAPI
         self.stock = stock
         
         Publishers.CombineLatest(vmPickerFrequency.$selectedOption, vmPickerInterval.$selectedOption)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] newFrequency, newInterval in
                 guard let self else { return }
                 Task {

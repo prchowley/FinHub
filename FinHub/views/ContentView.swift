@@ -12,10 +12,14 @@ import SwiftUI
 /// This view manages the state for loading, errors, and displaying stock symbols. It provides a search bar to filter stock symbols and displays a horizontal scrollable list of stock rows.
 struct ContentView: View {
     
-    @StateObject private var viewModel = ContentViewModel()
+    @StateObject private var viewModel: ContentViewModel
     @State private var searchText: String = ""
     @State private var hasLoadedData: Bool = false
     @Namespace private var namespace
+    
+    init(finnhubAPI: FinhubAPIService) {
+        _viewModel = .init(wrappedValue: .init(finnhubAPI: finnhubAPI))
+    }
     
     /// Creates the view that displays the content.
     ///
@@ -46,7 +50,8 @@ struct ContentView: View {
                             ForEach(viewModel.stockSymbols) { stock in
                                 ScrollView(showsIndicators: false) {
                                     StockRowView(
-                                        viewModel: .init(stock: stock)
+                                        finnhubAPI: viewModel.finnhubAPI,
+                                        stock: stock
                                     )
                                     .frame(minWidth: 300, idealWidth: 300, maxWidth: .infinity, minHeight: 500, maxHeight: .infinity, alignment: .center)
                                 }
@@ -76,6 +81,6 @@ struct ContentView: View {
     }
 }
 
-#Preview {
-    ContentView()
-}
+//#Preview {
+//    ContentView(finnhubAPI: FinHubAPIProvider(httpClient: , keyService: <#T##any KeyService#>))
+//}

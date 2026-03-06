@@ -12,7 +12,16 @@ import Charts
 struct StockChartView: View {
     
     /// The view model that provides data and handles logic for the stock chart.
-    @StateObject var viewModel: StockChartViewModel
+    @StateObject private var viewModel: StockChartViewModel
+    
+    init(httpClient: HTTPClientProtocol, keyService: KeyService, stock: StockSymbol) {
+        _viewModel = .init(
+            wrappedValue: StockChartViewModel(
+                alphaVantageAPI: AlphaVantageAPIProvider(httpClient: httpClient, keyService: keyService),
+                stock: stock
+            )
+        )
+    }
     
     /// The body of the view.
     var body: some View {

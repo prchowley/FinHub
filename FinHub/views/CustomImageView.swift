@@ -14,6 +14,9 @@ struct CustomImageView: View {
     /// The URL string of the image to be displayed.
     let imageUrlString: String
     
+    @Environment(\.httpClient) private var httpClient
+    @Environment(\.imageCache) private var imageCache
+
     /// Constructs the view that displays the image.
     ///
     /// The view will display the image fetched from the URL provided in `imageUrlString`. If the URL string is invalid, an empty view is shown. The image is displayed in a circular frame with a width and height of 100 points.
@@ -21,7 +24,11 @@ struct CustomImageView: View {
     /// - Returns: A `View` that represents the content of the `CustomImageView`.
     var body: some View {
         if let url = URL(string: imageUrlString) {
-            CachedAsyncImage(url: url)
+            CachedAsyncImage(
+                url: url,
+                cache: imageCache,
+                session: httpClient
+            )
                 .frame(width: 100, height: 100)
                 .cornerRadius(50) // Makes the image circular
         } else {

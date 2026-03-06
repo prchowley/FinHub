@@ -11,13 +11,12 @@ import Foundation
 ///
 /// The `StockRowViewModel` interacts with the Finnhub API to fetch the company profile and, optionally, the stock quote
 /// for a given stock symbol. It also manages loading states and error messages for these operations.
-@MainActor
 class StockRowViewModel: ObservableObject {
     
     // MARK: - Properties
     
     /// The service used to interact with the Finnhub API.
-    private let finnhubAPI: FinhubAPIService
+    let finnhubAPI: FinhubAPIService
     
     /// A boolean indicating whether detailed stock quote information should be fetched.
     let isDetails: Bool
@@ -55,19 +54,20 @@ class StockRowViewModel: ObservableObject {
     ///   - stock: The stock symbol associated with this view model.
     ///   - isDetails: A boolean indicating whether detailed stock quote information should be fetched. Defaults to `false`.
     init(
-        finnhubAPI: FinhubAPIService = FinHubAPIProvider(httpClient: HTTPClient.shared),
+        finnhubAPI: FinhubAPIService,
         stock: StockSymbol,
-        isDetails: Bool = false
+        isDetails: Bool = false,
+        companyProfile: CompanyProfile? = nil
     ) {
         self.finnhubAPI = finnhubAPI
         self.stock = stock
         self.isDetails = isDetails
+        self.companyProfile = companyProfile
     }
     
     // MARK: - Data Handling
     /// Fetches and processes the company profile for the given stock symbol.
     /// Updates `loadingCompanyProfile`, `companyProfile`, and error messages based on the result of the fetch request.
-    @MainActor
     func fetchCompanyProfile() async {
         loadingCompanyProfile = true
         do {
@@ -81,7 +81,6 @@ class StockRowViewModel: ObservableObject {
 
     /// Fetches and processes the stock quote for the given stock symbol if details are requested.
     /// Updates `loadingStockQuote`, `companyQuote`, and error messages based on the result of the fetch request.
-    @MainActor
     func fetchStockQuote() async {
         guard isDetails else { return }
         loadingStockQuote = true
@@ -96,9 +95,10 @@ class StockRowViewModel: ObservableObject {
 
     /// Prepares the data by fetching the company profile and, if requested, the stock quote for the given stock symbol.
     /// This function calls `fetchCompanyProfile` and `fetchStockQuote` to handle the data fetching.
-    @MainActor
     func prepareData() async {
-        await fetchCompanyProfile()
+        if companyProfile == nil {
+            await fetchCompanyProfile()
+        }
         if isDetails {
             await fetchStockQuote()
         }

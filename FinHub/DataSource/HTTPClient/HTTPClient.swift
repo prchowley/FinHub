@@ -92,9 +92,7 @@ final class URLSessionAdapter: URLSessionProtocol {
 final class HTTPClient: HTTPClientProtocol {
     var urlSession: URLSessionProtocol
     private let decoder: JSONDecoder
-    
-    static let shared = HTTPClient()
-    
+        
     init(
         urlSession: URLSessionProtocol = URLSessionAdapter(),
         decoder: JSONDecoder = JSONDecoder()

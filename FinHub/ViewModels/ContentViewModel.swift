@@ -12,7 +12,6 @@ import Combine
 ///
 /// The `ContentViewModel` interacts with the Finnhub API to fetch stock symbols and perform searches based on user input.
 /// It manages the loading state, error messages, and stock symbol data.
-@MainActor
 class ContentViewModel: ObservableObject {
     
     // MARK: - Properties
@@ -21,7 +20,7 @@ class ContentViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     
     /// The service used to interact with the Finnhub API.
-    private let finnhubAPI: FinhubAPIService
+    let finnhubAPI: FinhubAPIService
     
     /// An array of `StockSymbol` objects representing the fetched stock symbols.
     @Published var stockSymbols: [StockSymbol] = []
@@ -47,7 +46,7 @@ class ContentViewModel: ObservableObject {
     ///
     /// - Parameters:
     ///   - finnhubAPI: The service used to interact with the Finnhub API. Defaults to `FinHubAPIProvider()`.
-    init(finnhubAPI: FinhubAPIService = FinHubAPIProvider(httpClient: HTTPClient.shared)) {
+    init(finnhubAPI: FinhubAPIService) {
         self.finnhubAPI = finnhubAPI
     }
     

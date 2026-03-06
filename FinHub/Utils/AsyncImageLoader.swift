@@ -24,7 +24,6 @@ struct ImageEndpoint: EndpointProvider {
 ///
 /// The `AsyncImageLoader` class loads an image from a URL, caches it for future use, and handles errors during the image loading process.
 /// It conforms to `ObservableObject` so that it can be used in SwiftUI views to observe changes to the image and error properties.
-@MainActor
 class AsyncImageLoader: ObservableObject {
     /// The loaded image, if available.
     @Published var image: UIImage? = nil
@@ -44,15 +43,12 @@ class AsyncImageLoader: ObservableObject {
     ///   - session: The `HTTPClientProtocol` instance used for network operations.
     init(
         url: URL,
-        cache: ImageCaching = ImageCache.shared,
-        session: HTTPClientProtocol = HTTPClient.shared
+        cache: ImageCaching,
+        session: HTTPClientProtocol
     ) {
         self.url = url
         self.cache = cache
         self.session = session
-        Task {
-            await loadImage()
-        }
     }
     
     /// Loads the image from the URL.
@@ -61,7 +57,7 @@ class AsyncImageLoader: ObservableObject {
     /// The image will be cached for future use once it is successfully downloaded.
     func loadImage() async {
         // Check if the image is available in the cache
-        if let cachedImage = cache.loadImage(forKey: url.lastPathComponent) {
+        if let cachedImage = await cache.loadImage(forKey: url.lastPathComponent) {
             self.image = cachedImage
             return
         }
@@ -79,7 +75,7 @@ class AsyncImageLoader: ObservableObject {
             }
             
             // Cache the downloaded image
-            cache.saveImage(downloadedImage, forKey: url.lastPathComponent)
+            await cache.saveImage(downloadedImage, forKey: url.lastPathComponent)
             self.image = downloadedImage
         } catch {
             self.error = error
