@@ -13,18 +13,22 @@ import SwiftUI
 /// and provides the initial scene for the app.
 @main
 struct FinHubApp: App {
-    
+
     @Environment(\.keyService) var keyService
     @Environment(\.httpClient) var httpClient
 
+    init() {
+        URLCache.shared.diskCapacity = 1_000_000_00 // 100 MB
+    }
+    
     /// Saves the API tokens for different services.
     ///
     /// This method saves the tokens needed for accessing external APIs, such as Finnhub and Alpha Vantage.
     ///
     /// - Parameter keyservice: The `KeyService` instance used to save the tokens.
-    func saveTokens(keyservice: KeyService) {
-        keyservice.save(token: "cqvfjb9r01qkoahg0cd0cqvfjb9r01qkoahg0cdg", for: .finnhub)
-        keyservice.save(token: "244JOJQ6LBPIDBD6", for: .alpha)
+    func saveTokens() {
+        keyService.save(token: "cqvfjb9r01qkoahg0cd0cqvfjb9r01qkoahg0cdg", for: .finnhub)
+        keyService.save(token: "244JOJQ6LBPIDBD6", for: .alpha)
     }
     
     /// The main scene of the application.
@@ -37,7 +41,9 @@ struct FinHubApp: App {
                     httpClient: httpClient,
                     keyService: keyService
                 )
-            )
+            ).onAppear {
+                saveTokens()
+            }
         }
     }
 }

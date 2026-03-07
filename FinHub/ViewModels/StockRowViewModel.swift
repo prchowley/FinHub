@@ -11,6 +11,7 @@ import Foundation
 ///
 /// The `StockRowViewModel` interacts with the Finnhub API to fetch the company profile and, optionally, the stock quote
 /// for a given stock symbol. It also manages loading states and error messages for these operations.
+@MainActor
 class StockRowViewModel: ObservableObject {
     
     // MARK: - Properties

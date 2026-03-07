@@ -12,6 +12,7 @@ import Combine
 ///
 /// The `ContentViewModel` interacts with the Finnhub API to fetch stock symbols and perform searches based on user input.
 /// It manages the loading state, error messages, and stock symbol data.
+@MainActor
 class ContentViewModel: ObservableObject {
     
     // MARK: - Properties
